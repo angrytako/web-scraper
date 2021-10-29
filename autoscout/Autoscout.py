@@ -33,8 +33,8 @@ class AutoscoutScraper(CarScraper):
             self.carsUrls.add(carUrl)
             self.sem.release()
             urls.add(carUrl)
-        print(f"from {actualCars} to {len(urls)}")
-        if doubleNr >= len(urls) or len(urls)==0:
+        print(f"from {actualCars} to {len(urls)} doubles: {doubleNr}")
+        if len(urls)==0:
             return None
         return urls
 

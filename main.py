@@ -2,7 +2,7 @@ from subito.Subito import SubitoScraper
 from autoscout.Autoscout import AutoscoutScraper
 from automobile.Automobile import AutomobileScraper
 from multiprocessing import Process
-import sqlite3
+from DAO.DAO import createTable, getAllUrls, lowestPrice, numElem
 from sqlite3 import Error
 import cchardet 
 
@@ -18,42 +18,8 @@ def automobile(pageCounter):
     scraper = AutomobileScraper(pageCounter)
     scraper.getCars()
 
-
-CAR_TABLE = f"""CREATE TABLE CAR (
-            CAR_URL VARCHAR(40) PRIMARY KEY,
-            NOME VARCHAR(40) NOT NULL,
-            PREZZO INTEGER NOT NULL,
-            IMG_URL VARCHAR(40),
-            DATE VARCHAR(12),
-            EURO INTEGER,
-            KM INTEGER,
-            DESCRIPTION VARCHAR(200)
-        )"""
-def createTable(file):
-    con = sqlite3.connect(file)
-    cur = con.cursor()
-    cur.execute(CAR_TABLE)
-    con.close()
-    return
-
-def numElem(file):
-    con = sqlite3.connect(file)
-    cur = con.cursor()
-    cur.execute(f"""SELECT COUNT(*) FROM CAR""")
-    return cur.fetchall()
-
-def lowestPrice(file):
-    con = sqlite3.connect(file)
-    cur = con.cursor()
-    cur.execute(f"""SELECT NOME,PREZZO,EURO,CAR_URL FROM CAR 
-                    WHERE (PREZZO<3000 OR PREZZO is NULL)and (KM<110000 or KM is NULL) and (EURO>3 OR EURO is NULL)""")
-                    # WHERE PREZZO = (SELECT MIN(PREZZO) FROM CAR)
-    return cur.fetchall()
-
-
 def create_connection(db_file):
     try:
-        conn = None
         # print(numElem(db_file))
         # return
         # createTable(db_file)
@@ -74,9 +40,6 @@ def create_connection(db_file):
         quit()
     except Error as e:
         print(e)
-    finally:
-        if conn:
-            conn.close()
 
 
 if __name__ == '__main__':

@@ -49,8 +49,8 @@ class AutomobileScraper(CarScraper):
             self.sem.release()
             urls.add(carUrl)
             self.imgUrls.append(imgUrl)
-        print(f"from {actualCars} to {len(urls)}")
-        if doubleNr >= len(urls) or len(urls)==0:
+        print(f"from {actualCars} to {len(urls)} doubles: {doubleNr}")
+        if len(urls)==0:
             return None
         return urls
 
