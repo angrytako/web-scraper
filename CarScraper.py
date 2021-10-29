@@ -1,13 +1,16 @@
-PATH = "./chromedriver.exe"
+DB_PATH =".\pythonsqlite.db"
 PARSER = 'lxml'
+from multiprocessing import Semaphore
 from sqlite3.dbapi2 import Error
 import sqlite3
 import atexit
 from models.Car import Car
+from DAO.DAO import getAllUrls
+import traceback
 
 def terminationHandler(connection):
     connection.close()
-    print("CLOSED CONNECTION")
+    print(__name__,"CLOSED CONNECTION")
 
 def getDigits(str:str)->str:
     res = ""
@@ -17,10 +20,15 @@ def getDigits(str:str)->str:
     return res
 
 class CarScraper:
+    carsUrls = None
+    sem = None
     def __init__(self,pageCounter):
-        self.carsUrls = set()
-        self.cars = []
+        if not self.carsUrls:
+            self.carsUrls = getAllUrls(DB_PATH)
+        if not self.sem:
+            self.sem = Semaphore(1)
         self.pageCounter=pageCounter
+
     def getCarsUrls(self, mainUrl:str)->list:
         pass
     def getCarFromUrl(self, carUrl:str)->Car:
@@ -28,10 +36,6 @@ class CarScraper:
     def __getUrlsAndValidate__(self, cars:list)->set:
         pass
     def getMainUrl(self, pageCounter:int)->int:
-        pass
-    def scrape():
-        pass
-    def getDataLikeModel():
         pass
 
     def getCars(self):
@@ -43,13 +47,12 @@ class CarScraper:
             self.pageCounter+=1
             pageCarsUrls = self.getCarsUrls(mainUrl)
             if pageCarsUrls == None:
-                    #terminationHandler(connection)
                     return
             for carUrl in pageCarsUrls:
                 carSup = self.getCarFromUrl(carUrl)
                 try:
                     pass
-                    #carSup.saveToDb(connection)
+                    carSup.saveToDb(connection)
                 except Error:
-                    print(Error)
+                    traceback.print_exc()
                 print(carUrl)

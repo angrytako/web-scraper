@@ -13,3 +13,5 @@ subito/dati.json
 subito/__pycache__/Subito.cpython-38.pyc
 subito/__pycache__/Subito.pypy38.pyc
 dati.json
+automobile/__pycache__/Automobile.cpython-38.pyc
+DAO/__pycache__/DAO.cpython-38.pyc

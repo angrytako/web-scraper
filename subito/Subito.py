@@ -91,13 +91,14 @@ class SubitoScraper(CarScraper):
             actualCars+=1
             if carUrl in self.carsUrls:
                 doubleNr +=1
-                if doubleNr >= tollerance:
-                    return None
                 continue
+            self.sem.acquire()
             self.carsUrls.add(carUrl)
-            urls.add(carUrl)
-        
+            self.sem.release()
+            urls.add(carUrl)        
         print(f"from {actualCars} to {len(urls)}")
+        if doubleNr >= len(urls) or len(urls)==0:
+            return None
         return urls
 
     def getMainUrl(self)->int:

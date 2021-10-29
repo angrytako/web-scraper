@@ -1,5 +1,4 @@
 import sys
-from sqlite3.dbapi2 import Error
 import os
 current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)
@@ -10,7 +9,7 @@ import requests as req
 from CarScraper import PARSER, CarScraper,getDigits
 from models.Car import Car
 import re
-import sqlite3
+import cchardet
 
 class AutoscoutScraper(CarScraper):
     BASE_URL = "https://www.autoscout24.it"
@@ -18,7 +17,6 @@ class AutoscoutScraper(CarScraper):
     #returns set of all carsUrls, if you haven't seen them before,
     #otherwise assumes that you have reached 'the end' and returns null
     def __getUrlsAndValidate__(self, cars:list)->set:
-        tollerance = len(cars)
         doubleNr = 0
         actualCars = 0
         urls=set()
@@ -30,12 +28,14 @@ class AutoscoutScraper(CarScraper):
             actualCars+=1
             if carUrl in self.carsUrls:
                 doubleNr +=1
-                if doubleNr >= tollerance:
-                    return None
                 continue
+            self.sem.acquire()
             self.carsUrls.add(carUrl)
+            self.sem.release()
             urls.add(carUrl)
         print(f"from {actualCars} to {len(urls)}")
+        if doubleNr >= len(urls) or len(urls)==0:
+            return None
         return urls
 
     def getCarsUrls(self, mainUrl:str)->list:
