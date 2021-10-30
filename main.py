@@ -2,7 +2,7 @@ from subito.Subito import SubitoScraper
 from autoscout.Autoscout import AutoscoutScraper
 from automobile.Automobile import AutomobileScraper
 from multiprocessing import Process
-from DAO.DAO import createTable, getAllUrls, lowestPrice, numElem
+from DAO.DAO import createTable, getAllUrls, lowestPrice, numElem,getAllCars,DB_PATH
 from sqlite3 import Error
 import cchardet 
 
@@ -18,7 +18,7 @@ def automobile(pageCounter):
     scraper = AutomobileScraper(pageCounter)
     scraper.getCars()
 
-def create_connection(db_file):
+def findCarsAndSave(db_file):
     try:
         # print(numElem(db_file))
         # return
@@ -27,7 +27,6 @@ def create_connection(db_file):
         # for car in lowestPrice(db_file):
         #     print(car)
         # return
-
         proc1 = Process( target=subito,args=(1,) )
         proc2 = Process( target=autoscout,args=(1,) )
         proc3 = Process( target=automobile,args=(1,) )
@@ -43,5 +42,5 @@ def create_connection(db_file):
 
 
 if __name__ == '__main__':
-    create_connection(".\pythonsqlite.db")
+    findCarsAndSave(DB_PATH)
    

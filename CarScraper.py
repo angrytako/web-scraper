@@ -1,11 +1,10 @@
-DB_PATH =".\pythonsqlite.db"
 PARSER = 'lxml'
 from multiprocessing import Semaphore
 from sqlite3.dbapi2 import Error
 import sqlite3
 import atexit
 from models.Car import Car
-from DAO.DAO import getAllUrls
+from DAO.DAO import getAllUrls,DB_PATH
 import traceback
 
 def terminationHandler(connection):
@@ -39,8 +38,8 @@ class CarScraper:
         pass
 
     def getCars(self):
-        connection = sqlite3.connect(".\pythonsqlite.db")
-        atexit.register(terminationHandler,connection)
+        connection = sqlite3.connect(DB_PATH)
+        atexit.register(terminationHandler, connection)
         while(True):
             mainUrl = self.getMainUrl()
             print(self.pageCounter, mainUrl)
@@ -52,6 +51,8 @@ class CarScraper:
                 carSup = self.getCarFromUrl(carUrl)
                 try:
                     pass
+                    if carSup.price <=3000 and carSup.euro and carSup.euro >= 4:
+                        print("CANDIDATE:")
                     carSup.saveToDb(connection)
                 except Error:
                     traceback.print_exc()

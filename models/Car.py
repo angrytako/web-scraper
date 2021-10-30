@@ -1,43 +1,53 @@
 import json
-import sqlite3
 import re
+from sqlite3.dbapi2 import Connection
+from datetime import datetime
+
 class Car:
-    def __init__(self,nome,prezzo,url,imgUrl,date,euro,km,description):
-        if nome:
-            self.nome = nome#.replace("\"","").replace("'","")
+    def __init__(self,name,price,url,imgUrl,date,euro,km,description,creationDate = datetime.now(), expired = False):
+        if name:
+            self.name = name
         else:
-            self.nome=None
-        self.prezzo = prezzo
+            self.name=None
+        self.price = price
         self.url = url
         self.imgUrl = imgUrl
         self.date = date
-        if euro and len(re.findall(r"\d",euro))>0:
+        if euro and isinstance(euro,str) and len(re.findall(r"\d",euro))>0:
             self.euro = int(re.findall(r"\d",euro)[0])
+        elif euro and isinstance(euro,int):
+            self.euro = euro
         else:
             self.euro = None
         self.km = km
         if description:
-            self.description = description#.replace("\"","").replace("'","")
+            self.description = description
         else:
             self.description=None
+        self.creationDate = creationDate
+        self.expired = expired
+
     def __str__(self):
         return f"""
-        nome: {self.nome}
-        prezzo: {self.prezzo}
+        name: {self.name}
+        price: {self.price}
         url annuncio: {self.url}
         url immagine: {self.imgUrl}
         data: {self.date}
         euro: {self.euro}
         km: {self.km}
         descrizione: {self.description}
+        aggiunto il: {self.creationDate}
+        link scaduto: {self.expired}
         """
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, 
             sort_keys=True, indent=4)
-    def saveToDb(self,connection):
+
+    def saveToDb(self,connection:Connection):
         cur = connection.cursor()
-        args = [self.url,self.nome,self.prezzo,self.imgUrl,self.date,self.euro,self.km,self.description]
-        statement = f"""INSERT INTO CAR (CAR_URL,NOME,PREZZO,IMG_URL,DATE,EURO,KM,DESCRIPTION) 
-                        VALUES (?,?,?,?,?,?,?,?)"""
+        args = [self.url,self.name,self.price,self.imgUrl,self.date,self.euro,self.km,self.description,self.creationDate, self.expired]
+        statement = f"""INSERT INTO CAR (CAR_URL,NOME,PREZZO,IMG_URL,DATE,EURO,KM,DESCRIPTION,CREATION_DATE,EXPIRED) 
+                        VALUES (?,?,?,?,?,?,?,?,?,?)"""
         cur.execute(statement,args)
         cur.execute("commit;")
