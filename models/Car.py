@@ -30,7 +30,7 @@ class Car:
     def __str__(self):
         return f"""
         name: {self.name}
-        price: {self.price}
+        prezzo: {self.price}
         url annuncio: {self.url}
         url immagine: {self.imgUrl}
         data: {self.date}

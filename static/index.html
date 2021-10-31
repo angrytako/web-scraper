@@ -1,0 +1,54 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cars</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+</head>
+<body>
+    <div id="app">
+        
+       <div v-if="cars">
+           
+        <ul id="container">
+            <li v-for="car in cars" :key="car.url">
+                 <a v-bind:href="car.url" target="blank"><h2>{{car.name}}</h2> </a>
+                 <a v-bind:href="car.url" target="blank" ><img v-bind:src="car.imgUrl" alt=""></a> 
+                 <div class="infos">
+                    <h4>Prezzo: {{ car.price }}</h4>
+                    <h4>Euro: {{car.euro ? car.euro : "Non specificato"}}</h4>
+                    <h4>{{car.km}} km</h4>
+                    <h4>Data immatricolazione: {{car.date}}</h4>
+                    <h3 class="description">DESCRIZIONE</h3>
+                    <h4>{{car.description}}</h4>
+                </div>
+            </li>
+          </ul>
+        
+    </div> 
+    </div>
+</body>
+<script>
+    let app2 = new Vue({
+    el: '#app',
+    data: {
+        message: 'You loaded this page on ' + new Date().toLocaleString()
+    },
+    created: async function(){
+            const carsReq = await fetch("./lowest")
+            this.cars = await carsReq.json() 
+    },
+    data: {
+    cars:undefined
+  },
+    })
+    const init = async ()=>{
+        const carsReq = await fetch("./lowest")
+        const cars = await carsReq.json() 
+    }
+    
+</script>
+</html>

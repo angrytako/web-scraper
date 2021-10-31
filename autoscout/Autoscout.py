@@ -9,7 +9,6 @@ import requests as req
 from CarScraper import PARSER, CarScraper,getDigits
 from models.Car import Car
 import re
-import cchardet
 
 class AutoscoutScraper(CarScraper):
     BASE_URL = "https://www.autoscout24.it"

@@ -6,6 +6,3 @@ geckodriver.log
 python
 pythonsqlite.db
 selenium_test.py
-autoscout/dati.json
-subito/dati.json
-dati.json

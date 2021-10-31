@@ -8,7 +8,6 @@ sys.path.append(parent)
 
 from CarScraper import PARSER, CarScraper, getDigits
 import re
-import cchardet
 from models.Car import Car
 
 
