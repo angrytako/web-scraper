@@ -6,3 +6,4 @@ geckodriver.log
 python
 pythonsqlite.db
 selenium_test.py
+.env

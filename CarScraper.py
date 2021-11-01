@@ -1,4 +1,5 @@
-PARSER = 'lxml'
+PARSER = 'html.parser'
+#to add lxml again in pipenv
 from multiprocessing import Semaphore
 from sqlite3.dbapi2 import Error
 import sqlite3
@@ -6,7 +7,8 @@ import atexit
 from models.Car import Car
 from DAO.DAO import getAllNonExpiredUrls, DB_PATH
 import traceback
-
+import requests as req
+import os
 def terminationHandler(connection):
     connection.close()
     print(__name__,"CLOSED CONNECTION")
@@ -52,7 +54,8 @@ class CarScraper:
                 try:
                     pass
                     if carSup.price <=3000 and carSup.euro and carSup.euro >= 4:
-                        print("CANDIDATE:")
+                            req.post(os.getenv("SERVER_URL") + os.getenv("EMAIL_PATH"), json=f'{{"message": "{carSup.url}"}}')
+                            print("CANDIDATE:", carSup.url)
                     carSup.saveToDb(connection)
                 except Error:
                     traceback.print_exc()
