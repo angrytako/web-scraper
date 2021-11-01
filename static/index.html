@@ -12,8 +12,8 @@
     <div id="app">
         
        <div v-if="cars">
-           
         <ul id="container">
+        <button v-on:click="changeOrderElems">{{buttonStatus}}</button>
             <li v-for="car in cars" :key="car.url">
                  <a v-bind:href="car.url" target="blank"><h2>{{car.name}}</h2> </a>
                  <a v-bind:href="car.url" target="blank" ><img v-bind:src="car.imgUrl" alt=""></a> 
@@ -22,6 +22,8 @@
                     <h4>Euro: {{car.euro ? car.euro : "Non specificato"}}</h4>
                     <h4>{{car.km}} km</h4>
                     <h4>Data immatricolazione: {{car.date}}</h4>
+                    <h4>Data aggiunta: {{car.creationDate}}</h4>
+                    <h4>Data ultimo controllo: {{car.lastChecked}}</h4>
                     <h3 class="description">DESCRIZIONE</h3>
                     <h4>{{car.description}}</h4>
                 </div>
@@ -42,13 +44,25 @@
             this.cars = await carsReq.json() 
     },
     data: {
-    cars:undefined
+    cars:undefined,
+    buttonStatus: "ByPrice"
   },
+  methods:{
+    changeOrderElems
+  }
     })
-    const init = async ()=>{
-        const carsReq = await fetch("./lowest")
-        const cars = await carsReq.json() 
+function changeOrderElems(e){
+    console.log(new Date(this.cars[0].creationDate).getTime())
+    if(this.buttonStatus=="ByPrice")
+    {
+        this.buttonStatus="ByRecency"
+        this.cars.sort((car1,car2) => new Date(car2.creationDate).getTime() - new Date(car1.creationDate).getTime())
     }
-    
+    else if(this.buttonStatus=="ByRecency")
+    {
+        this.buttonStatus="ByPrice"
+        this.cars.sort((car1,car2) => car1.price - car2.price)
+    }
+}
 </script>
 </html>

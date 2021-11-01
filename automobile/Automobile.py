@@ -92,37 +92,7 @@ class AutomobileScraper(CarScraper):
             if attr and attr.text and re.match(r"[a-zA-Z ]*\d\d\d\d",attr.text):
                date = int(getDigits(re.findall(r"\d\d\d\d",attr.text)))
         return Car(name,price,carUrl,imgUrl,date,euro,km,description)
-# def getCars():
-#     pageCounter = 1
-#     mainUrl = getMainUrl(pageCounter)
-#     mainPage = req.get(mainUrl)
-#     parsedMainPage = BeautifulSoup(mainPage.text,PARSER)
-#     carsDiv = parsedMainPage.find(class_="Contents")
-#     carsDivsAndExtras = carsDiv.findAll("div")
-#     for car in carsDivsAndExtras:
-#         try:
-#             carUrl = BASE_URL + car["data-link"]
-#             imgUrl = car.find(class_="Card__ImgContainer").find("img")["data-src"]
-#         except:
-#              continue
-#         carPage = req.get(carUrl)
-#         parsedCarPage = BeautifulSoup(carPage.text,PARSER)
-#         infos = parsedCarPage.findAll(class_="Item")
-#         name = parsedCarPage.find("h1").text
-#         price = int(getDigits(parsedCarPage.find(class_="Price").text))
-#         date=None
-#         km = None
-#         euro = None
-#         description = parsedCarPage.find(class_="Description__Container").text
-#         for info in infos:
-#             if "Chilometri" in info.text:
-#                 km = getDigits(info.find("div").text)
-#             elif "Classe emissioni" in info.text:
-#                 euro = getDigits(info.find("div").text)
-#         attributes = parsedCarPage.find(class_="Attributes__Container")
-#         for attr in attributes:
-#             if attr and attr.text and re.match(r"[a-zA-Z ]*\d\d\d\d",attr.text):
-#                date = int(getDigits(re.findall(r"\d\d\d\d",attr.text)))
+
 if __name__ == "__main__":
     scraper = AutomobileScraper(1)
     scraper.getCars()

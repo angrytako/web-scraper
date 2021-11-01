@@ -1,11 +1,14 @@
-from flask import Flask, jsonify,send_from_directory
+from flask import Flask
 from DAO import DAO
 app = Flask(__name__, static_folder="static", static_url_path="/")
 
 
 @app.route('/lowest')
 def serveLowest():
-    return DAO.lowestPrice("car.db")
+    carsJson = DAO.lowestPrice(DAO.DB_PATH)
+    if carsJson: return carsJson
+    else: return "[]"
+
 @app.route('/', defaults={'path': ''})
 @app.route("/<path:path>")
 def static_dir(path):

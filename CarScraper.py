@@ -4,7 +4,7 @@ from sqlite3.dbapi2 import Error
 import sqlite3
 import atexit
 from models.Car import Car
-from DAO.DAO import getAllUrls,DB_PATH
+from DAO.DAO import getAllNonExpiredUrls, DB_PATH
 import traceback
 
 def terminationHandler(connection):
@@ -23,7 +23,7 @@ class CarScraper:
     sem = None
     def __init__(self,pageCounter):
         if not self.carsUrls:
-            self.carsUrls = getAllUrls(DB_PATH)
+            self.carsUrls = getAllNonExpiredUrls(DB_PATH)
         if not self.sem:
             self.sem = Semaphore(1)
         self.pageCounter=pageCounter
