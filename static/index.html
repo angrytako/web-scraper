@@ -18,14 +18,30 @@
                  <a v-bind:href="car.url" target="blank"><h2>{{car.name}}</h2> </a>
                  <a v-bind:href="car.url" target="blank" ><img v-bind:src="car.imgUrl" alt=""></a> 
                  <div class="infos">
-                    <h4>Prezzo: {{ car.price }}</h4>
-                    <h4>Euro: {{car.euro ? car.euro : "Non specificato"}}</h4>
-                    <h4>{{car.km}} km</h4>
+                    <h4>Prezzo: {{ car.price }}</h4> <span v-on:click="replaceWithInput($event,car)" class="change" name="price">X</span>
+                    <div class="input-change"><label for="price">Prezzo:</label><input v-on:keyup.enter="update($event,car)"v-model="car.price" type="number"><span v-on:click="update($event,car)" class="update" name="price">!</span></div>
+                    <br>
+                    <h4>Euro: {{car.euro ? car.euro : "Non specificato"}}</h4><span v-on:click="replaceWithInput($event,car)" class="change" name="euro">X</span>
+                    <div class="input-change"><label for="euro">Euro:</label><input v-on:keyup.enter="update($event,car)"v-model="car.euro" type="number"><span v-on:click="update($event,car)" class="update" name="euro">!</span></div>
+                    <br>
+                    <h4>{{car.km}} km</h4><span v-on:click="replaceWithInput($event,car)" class="change" name="km">X</span>
+                    <div class="input-change"><input v-on:keyup.enter="update($event,car)"v-model="car.km" type="number"><label for="km"> km:</label><span v-on:click="update($event,car)" class="update" name="km">!</span></div>
+                    <br>
                     <h4>Data immatricolazione: {{car.date}}</h4>
+                    <br>
                     <h4>Data aggiunta: {{car.creationDate}}</h4>
+                    <br>
                     <h4>Data ultimo controllo: {{car.lastChecked}}</h4>
+                    <br>
                     <h3 class="description">DESCRIZIONE</h3>
-                    <h4>{{car.description}}</h4>
+                    <br>
+                    <h4>{{car.description}}</h4><span v-on:click="replaceWithInput($event,car)" class="change" name="description">X</span>
+                    <div class="input-change"><label for="description">DESCRIZIONE:</label><textarea v-on:keyup.enter="update($event,car)"v-model="car.description" name="description" id="" cols="30" rows="10"></textarea><span v-on:click="update($event,car)" class="update" name="description">!</span></div>
+                    <div>
+                        <button v-on:click="updateAll($event,car)">UpdateAll</button>
+                        <button v-on:click="commit($event,car)">Commit</button>
+                    </div>
+
                 </div>
             </li>
           </ul>
@@ -48,9 +64,16 @@
     buttonStatus: "ByPrice"
   },
   methods:{
-    changeOrderElems
+    changeOrderElems,
+    replaceWithInput,
+    update,
+    updateAll,
+    commit
   }
     })
+
+const carsToggled = new Map(); 
+
 function changeOrderElems(e){
     console.log(new Date(this.cars[0].creationDate).getTime())
     if(this.buttonStatus=="ByPrice")
@@ -62,6 +85,110 @@ function changeOrderElems(e){
     {
         this.buttonStatus="ByPrice"
         this.cars.sort((car1,car2) => car1.price - car2.price)
+    }
+}
+function replaceWithInput(e , car){
+    let carDiv = carsToggled.get(car.url);
+    let toggler;
+    if(carDiv){
+        toggler = carDiv[e.target.getAttribute("name")];
+        if(toggler  && toggler.isBeingModified == false ){
+            toggler.isBeingModified = true;
+        }
+        else{
+            toggler = new Toggler([ e.target.nextElementSibling],[ e.target.previousElementSibling, e.target]);
+            carDiv[e.target.getAttribute("name")] = toggler;
+        }
+        toggler.toggle();
+        e.target.nextElementSibling.querySelector("input,textarea").focus();
+
+    }
+    else{
+        carDiv = new CarDiv();
+        toggler = new Toggler([ e.target.nextElementSibling],[ e.target.previousElementSibling, e.target]);
+        carDiv[e.target.getAttribute("name")] = toggler;
+        carsToggled.set(car.url,carDiv);
+        toggler.toggle();
+        e.target.nextElementSibling.querySelector("input,textarea").focus();
+    }
+
+}
+function update(e,car){
+
+    let carDiv = carsToggled.get(car.url);
+    let toggler;
+    if(carDiv){
+        toggler = carDiv[e.target.getAttribute("name")];
+        if(toggler  && toggler.isBeingModified == true ){
+            toggler.isBeingModified = false;
+        }
+        else{
+            toggler = new Toggler([ e.target.parentElement.previousElementSibling, e.target.parentElement.previousElementSibling.previousElementSibling],[e.target.parentElement],false);
+            carDiv[e.target.getAttribute("name")] = toggler;
+        }
+        toggler.toggle();
+    }
+    else{
+        carDiv = new CarDiv();
+        toggler =  new Toggler([ e.target.parentElement.previousElementSibling, e.target.parentElement.previousElementSibling.previousElementSibling],[e.target.parentElement],false);
+        carDiv[e.target.getAttribute("name")] = toggler;
+        carsToggled.set(car.url,carDiv);
+        toggler.toggle();
+    }    
+}
+
+function updateAll(e,car){
+    const carDiv = carsToggled.get(car.url);
+    if(carDiv) carDiv.toggleAllOff();
+}
+async function commit(e,car){
+    const resp = await fetch("/update",
+                            {
+                                method:"POST",
+                                headers:{"Content-Type":"application/json"},
+                                body:JSON.stringify(car)
+                            }
+                            );
+    const respMessage = await resp.text();
+    console.log(respMessage);
+}
+class Toggler{
+    constructor(toBeSetVisible, toBeHidden,isBeingModified = true){
+        this.isBeingModified =isBeingModified;
+        this.toBeSetVisible = toBeSetVisible;
+        this.toBeHidden = toBeHidden;
+    }
+    toggle(){
+        this.toBeSetVisible.forEach(element => {
+            element.style.display = "inline-block";
+        });
+        this.toBeHidden.forEach(element => {
+            element.style.display = "none";
+        });
+        let sup = this.toBeSetVisible;
+        this.toBeSetVisible = this.toBeHidden
+        this.toBeHidden = sup;
+    }
+}
+class CarDiv{
+    constructor(name=null, price=null,euro=null,km=null,description=null){
+        this.name = name
+        this.price = price
+        this.euro = euro
+        this.km = km
+        this.description = description
+    }
+    toggleAllOff(){
+        if(this.name && this.name.isBeingModified)
+            this.name.toggle();
+        if(this.price && this.price.isBeingModified)
+            this.price.toggle();
+        if(this.euro && this.euro.isBeingModified)
+            this.euro.toggle();
+        if(this.km && this.km.isBeingModified)
+            this.km.toggle();
+        if(this.description && this.description.isBeingModified)
+            this.description.toggle();
     }
 }
 </script>

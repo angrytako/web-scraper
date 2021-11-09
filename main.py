@@ -27,6 +27,13 @@ def sendMail():
     mail.send(msg)
     return "sent"
 
+@app.route("/update", methods=["POST"])
+def update():
+    car = request.json
+    print(car["price"])
+    return car["url"]
+
+
 @app.route('/', defaults={'path': ''})
 @app.route("/<path:path>")
 def static_dir(path):

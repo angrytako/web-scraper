@@ -173,4 +173,4 @@ def lowestPrice(file:str):
 
 if __name__ == "__main__":
     #createTable("cars.db")
-    print(lowestPrice(DB_PATH))
+    print(numElem(DB_PATH))

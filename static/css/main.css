@@ -22,8 +22,14 @@ li{
     margin: 40px 0;
     background-color: rgba(87, 2, 13, 0.089);
 }
+
 h1,h2{
+    display: inline-block;
     margin: 20px 0px;
+}
+h3,h4{
+    display: inline-block;
+    margin: 10px 0px;
 }
 .description{
     margin: 20px 0;
@@ -31,6 +37,17 @@ h1,h2{
 .infos{
     width: inherit;
 }
+.input-change{
+    font-weight: bold;
+    display:none;
+}
+.change,.update{
+    display: inline-block;
+    width: 30px;
+    text-align: center;
+    cursor: pointer;
+}
+
 img{
     object-fit:contain;
     width: 70vw;
