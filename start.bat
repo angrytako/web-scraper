@@ -1,0 +1,1 @@
+start pipenv run python main.py | start pipenv run python daemon.py
