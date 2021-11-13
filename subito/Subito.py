@@ -35,6 +35,8 @@ class SubitoScraper(CarScraper):
     #carsUrls gets changed by func. Gets added new urls
     def getCarFromUrl(self, carUrl:str)->Car:
         carPage = req.get(carUrl)
+        if carPage.status_code == 404:
+            return None
         parsedCarPage = BeautifulSoup(carPage.text,PARSER)
         carName = parsedCarPage.find("h1").text
         priceContainer = parsedCarPage.find(id="sticky-cta-container")

@@ -8,7 +8,8 @@ from models.Car import Car
 from DAO.DAO import getAllNonExpiredUrls, DB_PATH
 import traceback
 import requests as req
-import os
+import os    
+
 def terminationHandler(connection):
     connection.close()
     print(__name__,"CLOSED CONNECTION")
@@ -23,7 +24,9 @@ def getDigits(str:str)->str:
 class CarScraper:
     carsUrls = None
     sem = None
-    def __init__(self,pageCounter):
+    def __init__(self,pageCounter = None):
+        if not pageCounter:
+            return
         if not self.carsUrls:
             self.carsUrls = getAllNonExpiredUrls(DB_PATH)
         if not self.sem:

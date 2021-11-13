@@ -14,7 +14,7 @@ from models.Car import Car
 class AutomobileScraper(CarScraper):
     BASE_URL = "https://www.automobile.it"
 
-    def __init__(self,pageCounter):
+    def __init__(self,pageCounter = None):
         super().__init__(pageCounter)
         self.imgCounter=0
         self.imgUrls = None
@@ -71,12 +71,25 @@ class AutomobileScraper(CarScraper):
 
     def getCarFromUrl(self, carUrl:str)->Car:
         carPage = req.get(carUrl)
+        if carPage.status_code == 404:
+            return None
         parsedCarPage = BeautifulSoup(carPage.text,PARSER)
         infos = parsedCarPage.findAll(class_="Item")
+        name = parsedCarPage.find("h1").text
+        imgUrl = None
         if self.imgUrls:
             imgUrl = self.imgUrls[self.imgCounter]
             self.imgCounter += 1
-        name = parsedCarPage.find("h1").text
+        if not imgUrl:
+            allImgs = parsedCarPage.findAll("img")
+            for img in allImgs:
+                try:
+                    if img["alt"] in name or name in img["alt"]:
+                        print(img["src"])
+                        imgUrl = self.BASE_URL+ img["src"]
+                        break
+                except:
+                    pass
         price = int(getDigits(parsedCarPage.find(class_="Price").text))
         date=None
         km = None

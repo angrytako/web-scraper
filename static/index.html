@@ -40,6 +40,7 @@
                     <div>
                         <button v-on:click="updateAll($event,car)">UpdateAll</button>
                         <button v-on:click="commit($event,car)">Commit</button>
+                        <button v-on:click="reload($event,car)">Reload</button>
                     </div>
 
                 </div>
@@ -68,7 +69,8 @@
     replaceWithInput,
     update,
     updateAll,
-    commit
+    commit,
+    reload
   }
     })
 
@@ -114,7 +116,7 @@ function replaceWithInput(e , car){
 
 }
 function update(e,car){
-
+    e.preventDefault();
     let carDiv = carsToggled.get(car.url);
     let toggler;
     if(carDiv){
@@ -141,6 +143,7 @@ function updateAll(e,car){
     const carDiv = carsToggled.get(car.url);
     if(carDiv) carDiv.toggleAllOff();
 }
+
 async function commit(e,car){
     const resp = await fetch("/update",
                             {
@@ -151,6 +154,23 @@ async function commit(e,car){
                             );
     const respMessage = await resp.text();
     console.log(respMessage);
+}
+
+async function reload(e, car){
+    const resp = await fetch("/reload",
+                            {
+                                method:"POST",
+                                headers:{"Content-Type":"application/json"},
+                                body:JSON.stringify(car)
+                            }
+                            );
+    const newCar = await resp.json();
+    console.log(newCar);
+    car.lastChecked = newCar.lastChecked;
+    car.price = newCar.price;
+    car.km = newCar.km;
+    car.euro = newCar.euro;
+    car.description = newCar.description;
 }
 class Toggler{
     constructor(toBeSetVisible, toBeHidden,isBeingModified = true){

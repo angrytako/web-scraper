@@ -20,6 +20,7 @@ def automobile(pageCounter):
 
 def findCarsAndSave(db_file):
     try:
+        time.sleep(10)
         while True:
             proc1 = Process( target=subito,args=(1,) )
             proc2 = Process( target=autoscout,args=(1,) )

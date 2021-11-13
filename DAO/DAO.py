@@ -27,6 +27,21 @@ CAR_TABLE = f"""CREATE TABLE CAR (
             LAST_CHECKED DATE NOT NULL
         )"""
 
+def setExpired(car:Car,file:str)->bool:
+    con = None
+    try:
+        con = sqlite3.connect(file)
+        cur = con.cursor()
+        cur.execute(f"""UPDATE CAR
+                            SET EXPIRED = 1, LAST_CHECKED = ?
+                            WHERE CAR_URL = ? """, [car.lastChecked, car.url])
+        return True
+    except Error:
+        traceback.print_exc()
+        return False
+    finally:
+        if con:
+            con.close()    
 
 def checkExpiredAndUpdate(cars:list, con:Connection):
     stillUp = []
@@ -147,14 +162,26 @@ def saveAll(cars, file:str):
     finally:
         if con:
             con.close()
-
+def update(car:Car,file:str)->bool:
+    con = None
+    try:
+        con = sqlite3.connect(file)
+        car.updateInDb(con)
+        return True
+    except Error:
+        traceback.print_exc()
+        return False
+    finally:
+        if con:
+            con.close()
+            
 def lowestPrice(file:str):
     con=None
     try:
         con = sqlite3.connect(file)
         cur = con.cursor()
         cur.execute(f"""SELECT CAR_URL,NOME,PREZZO,IMG_URL,DATE,EURO,KM,DESCRIPTION,CREATION_DATE,EXPIRED,LAST_CHECKED FROM CAR 
-                        WHERE (PREZZO<4000 OR PREZZO is NULL) and (KM<110000 or KM is NULL) and (EURO>3 OR EURO is NULL) AND EXPIRED=0
+                        WHERE (PREZZO<4000 OR PREZZO is NULL) and (KM<140000 or KM is NULL) and (EURO>3 OR EURO is NULL) AND EXPIRED=0
                         ORDER BY PREZZO ASC""")
                         # WHERE PREZZO = (SELECT MIN(PREZZO) FROM CAR)
         cars = []

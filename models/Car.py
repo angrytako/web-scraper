@@ -43,15 +43,36 @@ class Car:
         last checked: {self.lastChecked}
         descrizione: {self.description}
         """
+    def toArray(self):
+        return [self.url,self.name,self.price,self.imgUrl,self.date,self.euro,self.km,
+                self.description,self.creationDate, self.expired,self.lastChecked]
+
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, 
             sort_keys=True, indent=4)
 
     def saveToDb(self,connection:Connection):
         cur = connection.cursor()
-        args = [self.url,self.name,self.price,self.imgUrl,self.date,self.euro,self.km,
-                self.description,self.creationDate, self.expired,self.lastChecked]
+        args = self.toArray()
         statement = f"""INSERT INTO CAR (CAR_URL,NOME,PREZZO,IMG_URL,DATE,EURO,KM,DESCRIPTION,CREATION_DATE,EXPIRED,LAST_CHECKED) 
                         VALUES (?,?,?,?,?,?,?,?,?,?,?)"""
         cur.execute(statement,args)
-        cur.execute("commit;")
+        cur.execute("commit;")       
+
+    def updateInDb(self,connection:Connection):
+        cur = connection.cursor()
+        args = [self.name,self.price,self.imgUrl,self.date,self.euro,self.km,
+                self.description,self.expired,self.lastChecked,self.url]
+        statement = f"""UPDATE CAR 
+                        SET NOME = ?, PREZZO = ?, IMG_URL = ?, DATE = ?, EURO = ?,
+                        KM = ?, DESCRIPTION = ?, EXPIRED = ?, LAST_CHECKED = ? 
+                        WHERE CAR_URL = ?"""
+        cur.execute(statement,args)
+        cur.execute("commit;")      
+
+
+def fromDictionary(carDict:dict) ->Car:
+    return Car(carDict["name"],int(carDict["price"]),carDict["url"],
+                carDict["imgUrl"],int(carDict["date"]) ,int(carDict["euro"]),
+                int(carDict["km"]), carDict["description"],datetime.fromisoformat(carDict["creationDate"]),
+                carDict["expired"],datetime.fromisoformat(carDict["lastChecked"]))

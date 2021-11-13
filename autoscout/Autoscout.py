@@ -53,6 +53,8 @@ class AutoscoutScraper(CarScraper):
 
     def getCarFromUrl(self, carUrl:str)->Car:
         carPage = req.get(carUrl)
+        if carPage.status_code == 404:
+            return None
         parsedCarPage = BeautifulSoup(carPage.text,PARSER)
         kmText = parsedCarPage.find(class_="cldt-stage-basic-data").find("span").text
         try:

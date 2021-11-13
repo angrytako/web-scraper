@@ -1,8 +1,21 @@
 from flask import Flask, request
 from flask_mail import Mail,Message
 from DAO import DAO
+from models.Car import fromDictionary, Car
+from CarScraper import CarScraper
 import json
 import os
+from subito.Subito import SubitoScraper
+from autoscout.Autoscout import AutoscoutScraper
+from automobile.Automobile import AutomobileScraper
+from datetime import datetime
+
+def getRightScraper(url:str)->CarScraper:
+    if "subito" in url:
+        return SubitoScraper()
+    if "autoscout" in url:
+        return AutoscoutScraper()
+    else: return AutomobileScraper()
 app = Flask(__name__, static_folder="static", static_url_path="/")
 
 app.config['MAIL_SERVER']= os.getenv("SERVER")
@@ -29,10 +42,25 @@ def sendMail():
 
 @app.route("/update", methods=["POST"])
 def update():
-    car = request.json
-    print(car["price"])
-    return car["url"]
+    car = fromDictionary(request.json)
+    DAO.update(car, DAO.DB_PATH)
+    return car.url
 
+@app.route("/reload", methods=["POST"])
+def reload():
+    car = fromDictionary(request.json)
+    carScraper = getRightScraper(car.url)
+    updatedCar = carScraper.getCarFromUrl(car.url)
+    del carScraper
+
+    if updatedCar:
+        updatedCar.creationDate = datetime.isoformat(car.creationDate)
+        DAO.update(updatedCar, DAO.DB_PATH)
+    else:
+        updatedCar = car
+        updatedCar.expired = True
+        DAO.setExpired(car, DAO.DB_PATH)
+    return updatedCar.toJSON()
 
 @app.route('/', defaults={'path': ''})
 @app.route("/<path:path>")
