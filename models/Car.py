@@ -10,7 +10,7 @@ class Car:
             self.name = name
         else:
             self.name=None
-        self.price = price
+        self.price = int(price)
         self.url = url
         self.imgUrl = imgUrl
         self.date = date
@@ -20,7 +20,10 @@ class Car:
             self.euro = euro
         else:
             self.euro = None
-        self.km = km
+        if km: 
+            self.km = int(km)
+        else:
+            self.km=None
         if description:
             self.description = description
         else:

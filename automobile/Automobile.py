@@ -35,7 +35,8 @@ class AutomobileScraper(CarScraper):
         self.imgUrls = []
         for car in cars:
             try:
-                carUrl = self.BASE_URL + car["data-link"]
+                carUrl = self.BASE_URL + car["href"]
+                print(carUrl)
                 imgUrl = car.find(class_="Card__ImgContainer").find("img")["data-src"]
             except:
                 continue
@@ -60,7 +61,7 @@ class AutomobileScraper(CarScraper):
             exit()
         parsedMainPage = BeautifulSoup(mainPage.text,PARSER)
         carsDiv = parsedMainPage.find(class_="Contents")
-        carsDivsAndExtras = carsDiv.findAll("div")
+        carsDivsAndExtras = carsDiv.findAll("a")
         carsUrls = self.__getUrlsAndValidate__(carsDivsAndExtras)
         if carsUrls == None:
             return None
