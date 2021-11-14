@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import request, Flask
 from flask_mail import Mail,Message
 from DAO import DAO
 from models.Car import fromDictionary, Car
@@ -9,6 +9,8 @@ from subito.Subito import SubitoScraper
 from autoscout.Autoscout import AutoscoutScraper
 from automobile.Automobile import AutomobileScraper
 from datetime import datetime
+from telethon import TelegramClient
+import asyncio
 
 def getRightScraper(url:str)->CarScraper:
     if "subito" in url:
@@ -16,6 +18,24 @@ def getRightScraper(url:str)->CarScraper:
     if "autoscout" in url:
         return AutoscoutScraper()
     else: return AutomobileScraper()
+
+async def sendToTelegram(message:str):
+    api_id = os.getenv("API_ID")
+    api_hash =  os.getenv("API_HASH")
+    MyPhone = os.getenv("MY_PHONE")
+    reciverNr =  os.getenv("RECIVER_NR")
+    client =  TelegramClient(os.getenv("TELEGRAM_CLIENT"), api_id, api_hash)
+    await client.connect()
+    if not await client.is_user_authorized():
+        await client.send_code_request(MyPhone)        
+        await client.sign_in(MyPhone, input('Enter the code: '))
+    try:
+        await client.send_message(reciverNr, message)
+    except Exception as e:
+        print(e)
+    finally: 
+        await client.disconnect()
+
 app = Flask(__name__, static_folder="static", static_url_path="/")
 
 app.config['MAIL_SERVER']= os.getenv("SERVER")
@@ -38,6 +58,7 @@ def sendMail():
                   recipients=[os.getenv("RECIPIENT_EMAIL")])
     msg.body = json.loads(request.json)["message"]
     mail.send(msg)
+    asyncio.run(sendToTelegram(msg.body))
     return "sent"
 
 @app.route("/update", methods=["POST"])

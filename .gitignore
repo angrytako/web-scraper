@@ -1,6 +1,7 @@
 *.pyc
 *.exe
 *.db
+*.session
 code_soup.txt
 geckodriver.log
 python

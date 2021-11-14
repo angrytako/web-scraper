@@ -42,7 +42,20 @@ def setExpired(car:Car,file:str)->bool:
     finally:
         if con:
             con.close()    
-
+def deleteFromDb(link:str,file:str):
+    con = None
+    try:
+        con = sqlite3.connect(file)
+        cur = con.cursor()
+        cur.execute(f"""DELETE FROM CAR WHERE CAR_URL = ? """, [link])
+        cur.execute("commit;")
+        return True
+    except Error:
+        traceback.print_exc()
+        return False
+    finally:
+        if con:
+            con.close()  
 def checkExpiredAndUpdate(cars:list, con:Connection):
     stillUp = []
     countDeleted = 0
@@ -199,5 +212,7 @@ def lowestPrice(file:str):
             con.close()
 
 if __name__ == "__main__":
+    print(numElem(DB_PATH))
+    deleteFromDb("https://www.subito.it/auto/peugeot-206-eco-plus-2010-torino-410665407.htm",DB_PATH)
     #createTable("cars.db")
     print(numElem(DB_PATH))
