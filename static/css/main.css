@@ -25,11 +25,11 @@ li{
 
 h1,h2{
     display: inline-block;
-    margin: 20px 0px;
+    margin: 20px 5px 20px 0;
 }
 h3,h4{
     display: inline-block;
-    margin: 10px 0px;
+    margin: 10px 5px 10px 0;
 }
 textarea{
     width: inherit;
@@ -47,7 +47,8 @@ textarea{
 }
 .change,.update{
     display: inline-block;
-    width: 30px;
+    width: 15px;
+    height: 15px;
     text-align: center;
     cursor: pointer;
 }

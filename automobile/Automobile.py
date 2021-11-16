@@ -36,7 +36,6 @@ class AutomobileScraper(CarScraper):
         for car in cars:
             try:
                 carUrl = self.BASE_URL + car["href"]
-                print(carUrl)
                 imgUrl = car.find(class_="Card__ImgContainer").find("img")["data-src"]
             except:
                 continue

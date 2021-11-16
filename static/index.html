@@ -16,17 +16,17 @@
         <button v-on:click="changeOrderElems">{{buttonStatus}}</button>
             <li v-for="car in cars" :key="car.url">
                  <a v-bind:href="car.url" target="blank"><h2>{{car.name}}</h2> </a>
-                 <a v-bind:href="car.url" target="blank" ><img v-bind:src="car.imgUrl" alt=""></a> <span v-on:click="replaceWithInput($event,car)" class="change" name="imgUrl">X</span>
-                 <div class="input-change"><input v-on:keyup.enter="update($event,car)"v-model="car.imgUrl" type="string"><label for="imgUrl"> ImgUrl:</label><span v-on:click="update($event,car)" class="update" name="imgUrl">!</span></div>
+                 <a v-bind:href="car.url" target="blank" ><img v-bind:src="car.imgUrl" alt=""></a> <img src="./img/edit_icon.svg" v-on:click="replaceWithInput($event,car)" class="change" name="imgUrl">
+                 <div class="input-change"><label for="imgUrl"> ImgUrl:</label><input v-on:keyup.enter="update($event,car)"v-model="car.imgUrl" type="string"><img src="./img/ok_icon.png" v-on:click="update($event,car)" class="update" name="imgUrl"></div>
                  <div class="infos">
-                    <h4>Prezzo: {{ car.price }}</h4> <span v-on:click="replaceWithInput($event,car)" class="change" name="price">X</span>
-                    <div class="input-change"><label for="price">Prezzo:</label><input v-on:keyup.enter="update($event,car)"v-model="car.price" type="number"><span v-on:click="update($event,car)" class="update" name="price">!</span></div>
+                    <h4>Prezzo: {{ car.price }}</h4> <img src="./img/edit_icon.svg" v-on:click="replaceWithInput($event,car)" class="change" name="price">
+                    <div class="input-change"><label for="price">Prezzo:</label><input v-on:keyup.enter="update($event,car)"v-model="car.price" type="number"><img src="./img/ok_icon.png" v-on:click="update($event,car)" class="update" name="price"></div>
                     <br>
-                    <h4>Euro: {{car.euro ? car.euro : "Non specificato"}}</h4><span v-on:click="replaceWithInput($event,car)" class="change" name="euro">X</span>
-                    <div class="input-change"><label for="euro">Euro:</label><input v-on:keyup.enter="update($event,car)"v-model="car.euro" type="number"><span v-on:click="update($event,car)" class="update" name="euro">!</span></div>
+                    <h4>Euro: {{car.euro ? car.euro : "Non specificato"}}</h4><img src="./img/edit_icon.svg" v-on:click="replaceWithInput($event,car)" class="change" name="euro">
+                    <div class="input-change"><label for="euro">Euro:</label><input v-on:keyup.enter="update($event,car)"v-model="car.euro" type="number"><img src="./img/ok_icon.png" v-on:click="update($event,car)" class="update" name="euro"></div>
                     <br>
-                    <h4>{{car.km}} km</h4><span v-on:click="replaceWithInput($event,car)" class="change" name="km">X</span>
-                    <div class="input-change"><input v-on:keyup.enter="update($event,car)"v-model="car.km" type="number"><label for="km"> km:</label><span v-on:click="update($event,car)" class="update" name="km">!</span></div>
+                    <h4>{{car.km}} km</h4><img src="./img/edit_icon.svg" v-on:click="replaceWithInput($event,car)" class="change" name="km">
+                    <div class="input-change"><input v-on:keyup.enter="update($event,car)"v-model="car.km" type="number"><label for="km"> km:</label><img src="./img/ok_icon.png" v-on:click="update($event,car)" class="update" name="km"></div>
                     <br>
                     <h4>Data immatricolazione: {{car.date}}</h4>
                     <br>
@@ -36,10 +36,10 @@
                     <br>
                     <h3 class="description">DESCRIZIONE</h3>
                     <br>
-                    <h4>{{car.description}}</h4><span v-on:click="replaceWithInput($event,car)" class="change" name="description">X</span>
-                    <div class="input-change"><label for="description">DESCRIZIONE:</label><textarea v-on:keyup.enter="update($event,car)"v-model="car.description" name="description" id="" cols="30" rows="10"></textarea><span v-on:click="update($event,car)" class="update" name="description">!</span></div>
+                    <h4>{{car.description}}</h4><img src="./img/edit_icon.svg" v-on:click="replaceWithInput($event,car)" class="change" name="description">
+                    <div class="input-change"><label for="description">DESCRIZIONE:</label><textarea v-on:keyup.enter="update($event,car)"v-model="car.description" name="description" id="" cols="30" rows="10"></textarea><img src="./img/ok_icon.png" v-on:click="update($event,car)" class="update" name="description"></div>
                     <div>
-                        <button v-on:click="updateAll($event,car)">UpdateAll</button>
+                        <button v-on:click="closeAlltabs($event,car)">close all tabs</button>
                         <button v-on:click="commit($event,car)">Commit</button>
                         <button v-on:click="reload($event,car)">Reload</button>
                     </div>
@@ -69,7 +69,7 @@
     changeOrderElems,
     replaceWithInput,
     update,
-    updateAll,
+    closeAlltabs,
     commit,
     reload
   }
@@ -140,7 +140,7 @@ function update(e,car){
     }    
 }
 
-function updateAll(e,car){
+function closeAlltabs(e,car){
     const carDiv = carsToggled.get(car.url);
     if(carDiv) carDiv.toggleAllOff();
 }

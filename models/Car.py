@@ -76,6 +76,6 @@ class Car:
 
 def fromDictionary(carDict:dict) ->Car:
     return Car(carDict["name"],int(carDict["price"]),carDict["url"],
-                carDict["imgUrl"],int(carDict["date"]) ,int(carDict["euro"]),
+                carDict["imgUrl"],int(carDict["date"]) ,int(carDict["euro"]) if carDict["euro"]  else None,
                 int(carDict["km"]), carDict["description"],datetime.fromisoformat(carDict["creationDate"]),
                 carDict["expired"],datetime.fromisoformat(carDict["lastChecked"]))
