@@ -9,6 +9,7 @@ from DAO.DAO import getAllNonExpiredUrls, DB_PATH
 import traceback
 import requests as req
 import os    
+from datetime import datetime
 
 def terminationHandler(connection):
     connection.close()
@@ -47,7 +48,7 @@ class CarScraper:
         atexit.register(terminationHandler, connection)
         while(True):
             mainUrl = self.getMainUrl()
-            print(self.pageCounter, mainUrl)
+            print(self.pageCounter, mainUrl,"\nDate:"+ datetime.now().strftime("%d/%m/%Y, %H:%M:%S"))
             self.pageCounter+=1
             pageCarsUrls = self.getCarsUrls(mainUrl)
             if pageCarsUrls == None:
