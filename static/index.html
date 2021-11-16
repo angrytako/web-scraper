@@ -16,7 +16,8 @@
         <button v-on:click="changeOrderElems">{{buttonStatus}}</button>
             <li v-for="car in cars" :key="car.url">
                  <a v-bind:href="car.url" target="blank"><h2>{{car.name}}</h2> </a>
-                 <a v-bind:href="car.url" target="blank" ><img v-bind:src="car.imgUrl" alt=""></a> 
+                 <a v-bind:href="car.url" target="blank" ><img v-bind:src="car.imgUrl" alt=""></a> <span v-on:click="replaceWithInput($event,car)" class="change" name="imgUrl">X</span>
+                 <div class="input-change"><input v-on:keyup.enter="update($event,car)"v-model="car.imgUrl" type="string"><label for="imgUrl"> ImgUrl:</label><span v-on:click="update($event,car)" class="update" name="imgUrl">!</span></div>
                  <div class="infos">
                     <h4>Prezzo: {{ car.price }}</h4> <span v-on:click="replaceWithInput($event,car)" class="change" name="price">X</span>
                     <div class="input-change"><label for="price">Prezzo:</label><input v-on:keyup.enter="update($event,car)"v-model="car.price" type="number"><span v-on:click="update($event,car)" class="update" name="price">!</span></div>
@@ -191,8 +192,9 @@ class Toggler{
     }
 }
 class CarDiv{
-    constructor(name=null, price=null,euro=null,km=null,description=null){
+    constructor(name=null,imgUrl=null ,price=null,euro=null,km=null,description=null){
         this.name = name
+        this.imgUrl = imgUrl
         this.price = price
         this.euro = euro
         this.km = km
@@ -201,6 +203,8 @@ class CarDiv{
     toggleAllOff(){
         if(this.name && this.name.isBeingModified)
             this.name.toggle();
+        if(this.imgUrl && this.imgUrl.isBeingModified)
+            this.imgUrl.toggle();
         if(this.price && this.price.isBeingModified)
             this.price.toggle();
         if(this.euro && this.euro.isBeingModified)
