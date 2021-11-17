@@ -1,4 +1,5 @@
 from flask import request, Flask
+from DAO.CarParams import CarParams
 from flask_mail import Mail,Message
 from DAO import DAO
 from models.Car import fromDictionary, Car
@@ -45,9 +46,10 @@ app.config['MAIL_PASSWORD'] = os.getenv("PW")
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
-@app.route('/lowest')
-def serveLowest():
-    carsJson = DAO.lowestPrice(DAO.DB_PATH)
+@app.route('/getCars', methods=["POST"])
+def serveGetCars():
+    carsSearchDict = request.json
+    carsJson = DAO.fromCarParams(file=DAO.DB_PATH,carParams=CarParams(carsSearchDict))
     if carsJson: return carsJson
     else: return "[]"
 

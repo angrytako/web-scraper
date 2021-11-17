@@ -5,13 +5,13 @@ import sys
 import os
 import requests as req
 from datetime import datetime, timedelta
+from DAO.CarParams import CarParams
 current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)
 sys.path.append(parent)
 from models.Car import Car
 
-
-DB_PATH =".\cars.db"
+DB_PATH = os.path.join(os.path.dirname(current) , "cars.db")
 
 CAR_TABLE = f"""CREATE TABLE CAR (
             CAR_URL VARCHAR(40) PRIMARY KEY NOT NULL,
@@ -210,9 +210,32 @@ def lowestPrice(file:str):
     finally:
         if con:
             con.close()
+def fromCarParams(file:str,carParams:CarParams)->list:
+    con=None
+    try:
+        con = sqlite3.connect(file)
+        cur = con.cursor()
+        dbStuff = carParams.toDbStringAndArray()
+
+        cur.execute(dbStuff[0],dbStuff[1])
+        cars = []
+        for car in cur.fetchall():
+            expired = 1
+            if car[9] == 1:
+                expired = True
+            else: expired = False
+            cars.append(Car(car[1],car[2],car[0],car[3],car[4],car[5],car[6],car[7],car[8],expired, car[10]))
+        return convertToJson(checkExpiredAndUpdate(cars,con))
+    except Error:
+        traceback.print_exc()
+    finally:
+        if con:
+            con.close()
 
 if __name__ == "__main__":
-    print(numElem(DB_PATH))
-    deleteFromDb("https://www.subito.it/auto/peugeot-206-eco-plus-2010-torino-410665407.htm",DB_PATH)
-    #createTable("cars.db")
-    print(numElem(DB_PATH))
+    # print(numElem(DB_PATH))
+    # deleteFromDb("https://www.subito.it/auto/peugeot-206-eco-plus-2010-torino-410665407.htm",DB_PATH)
+    # #createTable("cars.db")
+    # print(numElem(DB_PATH))
+    #print(fromCarParams(DB_PATH, CarParams({"prezzo":{"value":5000, "op":None}})))
+    print(fromCarParams(DB_PATH, CarParams({"nome":{"value":"%Opel%", "op":"like"},"prezzo":{"value":6000, "op":None}})))

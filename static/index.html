@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cars</title>
     <link rel="stylesheet" href="css/main.css">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 
 </head>
 <body>
+    <div id="spinner">
+        <img src="./img/spinner.svg" alt="">
+    </div>
     <div id="app">
-        
-       <div v-if="cars">
+        <nav><label>prezzoMax</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" v:type="number" v-model.number="carsSearchParams.prezzo.value"> <label> euroMin</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" v:type="number" v-model.number="carsSearchParams.euro.value"> <label >kmMax</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" v:type="number" v-model.number="carsSearchParams.km.value"><label >titolo</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" v:type="text" v-model="carsSearchParams.nome.value"><button v-on:click="sendSearch(carsSearchParams.toDbObj(),cars)">search</button></nav>
+       <div v-if="cars && cars.length > 0">
         <ul id="container">
         <button v-on:click="changeOrderElems">{{buttonStatus}}</button>
             <li v-for="car in cars" :key="car.url">
@@ -26,7 +28,7 @@
                     <div class="input-change"><label for="euro">Euro:</label><input v-on:keyup.enter="update($event,car)"v-model="car.euro" type="number"><img src="./img/ok_icon.png" v-on:click="update($event,car)" class="update" name="euro"></div>
                     <br>
                     <h4>{{car.km}} km</h4><img src="./img/edit_icon.svg" v-on:click="replaceWithInput($event,car)" class="change" name="km">
-                    <div class="input-change"><input v-on:keyup.enter="update($event,car)"v-model="car.km" type="number"><label for="km"> km:</label><img src="./img/ok_icon.png" v-on:click="update($event,car)" class="update" name="km"></div>
+                    <div class="input-change"><input v-on:keyup.enter="update($event,car)" v-model="car.km" type="number"><label for="km"> km:</label><img src="./img/ok_icon.png" v-on:click="update($event,car)" class="update" name="km"></div>
                     <br>
                     <h4>Data immatricolazione: {{car.date}}</h4>
                     <br>
@@ -49,171 +51,11 @@
           </ul>
         
     </div> 
+    <div v-else-if="cars && (cars.length == 0 || cars == null)" >
+        <h1>Sorry, no cars</h1>
+    </div>
     </div>
 </body>
-<script>
-    let app2 = new Vue({
-    el: '#app',
-    data: {
-        message: 'You loaded this page on ' + new Date().toLocaleString()
-    },
-    created: async function(){
-            const carsReq = await fetch("./lowest")
-            this.cars = await carsReq.json() 
-    },
-    data: {
-    cars:undefined,
-    buttonStatus: "ByPrice"
-  },
-  methods:{
-    changeOrderElems,
-    replaceWithInput,
-    update,
-    closeAlltabs,
-    commit,
-    reload
-  }
-    })
-
-const carsToggled = new Map(); 
-
-function changeOrderElems(e){
-    console.log(new Date(this.cars[0].creationDate).getTime())
-    if(this.buttonStatus=="ByPrice")
-    {
-        this.buttonStatus="ByRecency"
-        this.cars.sort((car1,car2) => new Date(car2.creationDate).getTime() - new Date(car1.creationDate).getTime())
-    }
-    else if(this.buttonStatus=="ByRecency")
-    {
-        this.buttonStatus="ByPrice"
-        this.cars.sort((car1,car2) => car1.price - car2.price)
-    }
-}
-function replaceWithInput(e , car){
-    let carDiv = carsToggled.get(car.url);
-    let toggler;
-    if(carDiv){
-        toggler = carDiv[e.target.getAttribute("name")];
-        if(toggler  && toggler.isBeingModified == false ){
-            toggler.isBeingModified = true;
-        }
-        else{
-            toggler = new Toggler([ e.target.nextElementSibling],[ e.target.previousElementSibling, e.target]);
-            carDiv[e.target.getAttribute("name")] = toggler;
-        }
-        toggler.toggle();
-        e.target.nextElementSibling.querySelector("input,textarea").focus();
-
-    }
-    else{
-        carDiv = new CarDiv();
-        toggler = new Toggler([ e.target.nextElementSibling],[ e.target.previousElementSibling, e.target]);
-        carDiv[e.target.getAttribute("name")] = toggler;
-        carsToggled.set(car.url,carDiv);
-        toggler.toggle();
-        e.target.nextElementSibling.querySelector("input,textarea").focus();
-    }
-
-}
-function update(e,car){
-    e.preventDefault();
-    let carDiv = carsToggled.get(car.url);
-    let toggler;
-    if(carDiv){
-        toggler = carDiv[e.target.getAttribute("name")];
-        if(toggler  && toggler.isBeingModified == true ){
-            toggler.isBeingModified = false;
-        }
-        else{
-            toggler = new Toggler([ e.target.parentElement.previousElementSibling, e.target.parentElement.previousElementSibling.previousElementSibling],[e.target.parentElement],false);
-            carDiv[e.target.getAttribute("name")] = toggler;
-        }
-        toggler.toggle();
-    }
-    else{
-        carDiv = new CarDiv();
-        toggler =  new Toggler([ e.target.parentElement.previousElementSibling, e.target.parentElement.previousElementSibling.previousElementSibling],[e.target.parentElement],false);
-        carDiv[e.target.getAttribute("name")] = toggler;
-        carsToggled.set(car.url,carDiv);
-        toggler.toggle();
-    }    
-}
-
-function closeAlltabs(e,car){
-    const carDiv = carsToggled.get(car.url);
-    if(carDiv) carDiv.toggleAllOff();
-}
-
-async function commit(e,car){
-    const resp = await fetch("/update",
-                            {
-                                method:"POST",
-                                headers:{"Content-Type":"application/json"},
-                                body:JSON.stringify(car)
-                            }
-                            );
-    const respMessage = await resp.text();
-    console.log(respMessage);
-}
-
-async function reload(e, car){
-    const resp = await fetch("/reload",
-                            {
-                                method:"POST",
-                                headers:{"Content-Type":"application/json"},
-                                body:JSON.stringify(car)
-                            }
-                            );
-    const newCar = await resp.json();
-    console.log(newCar);
-    car.lastChecked = newCar.lastChecked;
-    car.price = newCar.price;
-    car.km = newCar.km;
-    car.euro = newCar.euro;
-    car.description = newCar.description;
-}
-class Toggler{
-    constructor(toBeSetVisible, toBeHidden,isBeingModified = true){
-        this.isBeingModified =isBeingModified;
-        this.toBeSetVisible = toBeSetVisible;
-        this.toBeHidden = toBeHidden;
-    }
-    toggle(){
-        this.toBeSetVisible.forEach(element => {
-            element.style.display = "inline-block";
-        });
-        this.toBeHidden.forEach(element => {
-            element.style.display = "none";
-        });
-        let sup = this.toBeSetVisible;
-        this.toBeSetVisible = this.toBeHidden
-        this.toBeHidden = sup;
-    }
-}
-class CarDiv{
-    constructor(name=null,imgUrl=null ,price=null,euro=null,km=null,description=null){
-        this.name = name
-        this.imgUrl = imgUrl
-        this.price = price
-        this.euro = euro
-        this.km = km
-        this.description = description
-    }
-    toggleAllOff(){
-        if(this.name && this.name.isBeingModified)
-            this.name.toggle();
-        if(this.imgUrl && this.imgUrl.isBeingModified)
-            this.imgUrl.toggle();
-        if(this.price && this.price.isBeingModified)
-            this.price.toggle();
-        if(this.euro && this.euro.isBeingModified)
-            this.euro.toggle();
-        if(this.km && this.km.isBeingModified)
-            this.km.toggle();
-        if(this.description && this.description.isBeingModified)
-            this.description.toggle();
-    }
-}
-</script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script  type="module" src="./js/index.js"></script>
 </html>
