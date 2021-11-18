@@ -22,9 +22,9 @@ class AutomobileScraper(CarScraper):
 
     def getMainUrl(self)->int:
         if self.pageCounter <= 1:
-            return "https://www.automobile.it/gpl?classe_emissioni=euro_6,euro_5,euro_4&dove=torino_comune&km_max=125000_km&prezzo_a=max_4000_euro&prezzo_da=1000&radius=150&valutazione_del_venditore=tutti"
+            return "https://www.automobile.it/gpl?classe_emissioni=euro_6,euro_5,euro_4&dove=torino_comune&prezzo_a=max_6000_euro&prezzo_da=1000&radius=300&valutazione_del_venditore=tutti"
         else:
-            return f"https://www.automobile.it/gpl/page={self.pageCounter}?classe_emissioni=euro_6,euro_5,euro_4&dove=torino_comune&km_max=125000_km&prezzo_a=max_4000_euro&prezzo_da=1000&radius=150&valutazione_del_venditore=tutti"
+            return f"https://www.automobile.it/gpl/page={self.pageCounter}?classe_emissioni=euro_6,euro_5,euro_4&dove=torino_comune&prezzo_a=max_6000_euro&prezzo_da=1000&radius=300&valutazione_del_venditore=tutti"
 
     #returns set of all carsUrls, if you haven't seen them before,
     #otherwise assumes that you have reached 'the end' and returns null

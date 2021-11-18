@@ -103,7 +103,7 @@ class SubitoScraper(CarScraper):
         return urls
 
     def getMainUrl(self)->int:
-        return f"https://www.subito.it/annunci-piemonte/vendita/auto/?o={self.pageCounter}&cvs=1&ps=1000&me=21&fu=3"
+        return f"https://www.subito.it/annunci-piemonte/vendita/auto/?o={self.pageCounter}&cvs=1&ps=1000&fu=3"
 
 
 if __name__ == "__main__":
