@@ -67,7 +67,8 @@ def checkExpiredAndUpdate(cars:list, con:Connection):
     for car in cars:
         if datetime.fromisoformat(car.lastChecked) < oneDayAgo and car.expired != True:  
             car.lastChecked = datetime.now().isoformat()
-            if req.head(car.url).status_code>300: 
+            res = req.head(car.url)
+            if res.status_code>300 or res.url != car.url: 
                 cur.execute(f"""UPDATE CAR
                             SET EXPIRED = 1, LAST_CHECKED = ?
                             WHERE CAR_URL = ? """, [car.lastChecked,car.url])
