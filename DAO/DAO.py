@@ -4,14 +4,15 @@ import traceback
 import sys
 import os
 import requests as req
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from DAO.CarParams import CarParams
 current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)
 sys.path.append(parent)
 from models.Car import Car
 
-DB_PATH = os.path.join(os.path.dirname(current) , "cars.db")
+OLD_DB_PATH = os.path.join(os.path.dirname(current) , "cars.db")
+DB_PATH = os.path.join(os.path.dirname(current) , "carsAll.db")
 
 CAR_TABLE = f"""CREATE TABLE CAR (
             CAR_URL VARCHAR(40) PRIMARY KEY NOT NULL,
@@ -21,6 +22,7 @@ CAR_TABLE = f"""CREATE TABLE CAR (
             DATE VARCHAR(12),
             EURO INT,
             KM INT,
+            FUEL VARCHAR(20),
             DESCRIPTION VARCHAR(200),
             EXPIRED BOOLEAN NOT NULL DEFAULT 0,
             CREATION_DATE DATE NOT NULL,
@@ -128,7 +130,8 @@ def getAllCars(file:str)->list:
             if car[9] == 1:
                 expired = True
             else: expired = False
-            cars.append(Car(car[1],car[2],car[0],car[3],car[4],car[5],car[6],car[7],car[8],expired,car[10]))
+            cars.append(Car(url=car[0],name=car[1],price=car[2],imgUrl=car[3], date=car[4],euro=car[5],km=car[6],
+                            description=car[7],creationDate= datetime.fromisoformat(car[8]),expired=expired,lastChecked= datetime.fromisoformat(car[10]),fuel="GPL"))
         return cars
 
     except Error:
@@ -222,10 +225,12 @@ def fromCarParams(file:str,carParams:CarParams)->list:
         cars = []
         for car in cur.fetchall():
             expired = 1
-            if car[9] == 1:
+            if car[10] == 1:
                 expired = True
             else: expired = False
-            cars.append(Car(car[1],car[2],car[0],car[3],car[4],car[5],car[6],car[7],car[8],expired, car[10]))
+            #SELECT CAR_URL,NOME,PREZZO,IMG_URL,DATE,EURO,KM,DESCRIPTION,FUEL,CREATION_DATE,EXPIRED,LAST_CHECKED 
+            cars.append(Car(url=car[0],name=car[1],price=car[2],imgUrl=car[3],date=car[4],euro=car[5],km=car[6],
+                            description=car[7], fuel= car[8],creationDate=car[9],expired=expired,lastChecked=car[11]))
         return convertToJson(checkExpiredAndUpdate(cars,con))
     except Error:
         traceback.print_exc()
@@ -236,7 +241,8 @@ def fromCarParams(file:str,carParams:CarParams)->list:
 if __name__ == "__main__":
     # print(numElem(DB_PATH))
     # deleteFromDb("https://www.subito.it/auto/peugeot-206-eco-plus-2010-torino-410665407.htm",DB_PATH)
-    # #createTable("cars.db")
+    createTable(DB_PATH)
+    saveAll(getAllCars(OLD_DB_PATH),"carsAll.db")
     # print(numElem(DB_PATH))
     #print(fromCarParams(DB_PATH, CarParams({"prezzo":{"value":5000, "op":None}})))
-    print(fromCarParams(DB_PATH, CarParams({"nome":{"value":"%Opel%", "op":"like"},"prezzo":{"value":6000, "op":None}})))
+    #print(fromCarParams(DB_PATH, CarParams({"nome":{"value":"%Opel%", "op":"like"},"prezzo":{"value":6000, "op":None}})))

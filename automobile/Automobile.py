@@ -16,15 +16,14 @@ class AutomobileScraper(CarScraper):
 
     def __init__(self,pageCounter = None):
         super().__init__(pageCounter)
-        self.imgCounter=0
         self.imgUrls = None
 
 
     def getMainUrl(self)->int:
         if self.pageCounter <= 1:
-            return "https://www.automobile.it/gpl?classe_emissioni=euro_6,euro_5,euro_4&dove=torino_comune&prezzo_a=max_6000_euro&prezzo_da=1000&radius=300&valutazione_del_venditore=tutti"
+            return "https://www.automobile.it/torino_comune?classe_emissioni=euro_6,euro_5,euro_4&prezzo_a=max_6000_euro&prezzo_da=1000&radius=300&valutazione_del_venditore=tutti"
         else:
-            return f"https://www.automobile.it/gpl/page={self.pageCounter}?classe_emissioni=euro_6,euro_5,euro_4&dove=torino_comune&prezzo_a=max_6000_euro&prezzo_da=1000&radius=300&valutazione_del_venditore=tutti"
+            return f"https://www.automobile.it/torino_comune/page-{self.pageCounter}?classe_emissioni=euro_6,euro_5,euro_4&dove=torino_comune&prezzo_a=max_6000_euro&prezzo_da=1000&radius=300&valutazione_del_venditore=tutti"
 
     #returns set of all carsUrls, if you haven't seen them before,
     #otherwise assumes that you have reached 'the end' and returns null
@@ -32,11 +31,11 @@ class AutomobileScraper(CarScraper):
         doubleNr = 0
         actualCars = 0
         urls=set()
-        self.imgUrls = []
+        self.imgUrls = {}
         for car in cars:
             try:
                 carUrl = self.BASE_URL + car["href"]
-                imgUrl = car.find(class_="Card__ImgContainer").find("img")["data-src"]
+                imgUrl = {carUrl:car.find(class_="Card__ImgContainer").find("img")["data-src"]}
             except:
                 continue
             actualCars+=1
@@ -54,7 +53,6 @@ class AutomobileScraper(CarScraper):
         return urls
 
     def getCarsUrls(self, mainUrl:str)->list:
-        mainUrl = mainUrl
         mainPage = req.get(mainUrl)
         if mainPage.status_code > 400:
             exit()
@@ -66,7 +64,6 @@ class AutomobileScraper(CarScraper):
             return None
         if len(carsUrls) == 0:
             return None
-        self.imgCounter = 0
         return carsUrls
 
     def getCarFromUrl(self, carUrl:str)->Car:
@@ -78,8 +75,7 @@ class AutomobileScraper(CarScraper):
         name = parsedCarPage.find("h1").text
         imgUrl = None
         if self.imgUrls:
-            imgUrl = self.imgUrls[self.imgCounter]
-            self.imgCounter += 1
+            imgUrl = self.imgUrls[carUrl]
         if not imgUrl:
             allImgs = parsedCarPage.findAll("img")
             for img in allImgs:
@@ -94,17 +90,22 @@ class AutomobileScraper(CarScraper):
         date=None
         km = None
         euro = None
+        fuel = None
         description = parsedCarPage.find(class_="Description__Container").text
         for info in infos:
             if "Chilometri" in info.text:
                 km = getDigits(info.find("div").text)
             elif "Classe emissioni" in info.text:
                 euro = getDigits(info.find("div").text)
+            elif "Carburante" in info.text:
+                fuel = info.find("div").text
         attributes = parsedCarPage.find(class_="Attributes__Container")
         for attr in attributes:
             if attr and attr.text and re.match(r"[a-zA-Z ]*\d\d\d\d",attr.text):
                date = int(getDigits(re.findall(r"\d\d\d\d",attr.text)))
-        return Car(name,price,carUrl,imgUrl,date,euro,km,description)
+        if fuel and "gas di petrolio liquefatto" in fuel.lower():
+            fuel = "GPL"
+        return Car(name,price,carUrl,imgUrl,date,euro,km,description,fuel)
 
 if __name__ == "__main__":
     scraper = AutomobileScraper(1)

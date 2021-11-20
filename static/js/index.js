@@ -152,4 +152,5 @@ async function reload(e, car){
     car.km = newCar.km;
     car.euro = newCar.euro;
     car.description = newCar.description;
+    car.fuel = newCar.fuel;
 }

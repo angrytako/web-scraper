@@ -17,13 +17,14 @@ export class Toggler{
     }
 }
 export class CarDiv{
-    constructor(name=null,imgUrl=null ,price=null,euro=null,km=null,description=null){
+    constructor(name=null,imgUrl=null ,price=null,euro=null,km=null,description=null,fuel=null){
         this.name = name
         this.imgUrl = imgUrl
         this.price = price
         this.euro = euro
         this.km = km
         this.description = description
+        this.fuel = fuel
     }
     toggleAllOff(){
         if(this.name && this.name.isBeingModified)
@@ -38,20 +39,24 @@ export class CarDiv{
             this.km.toggle();
         if(this.description && this.description.isBeingModified)
             this.description.toggle();
+        if(this.fuel && this.fuel.isBeingModified)
+            this.fuel.toggle();
     }
 }
 
 export class CarParamsSelector {
     constructor(nome={value:null,op:"like"},prezzo={value:4000,op:"<="},
-    url={value:null,op:null},imgUrl={value:null,op:null},date={value:null,op:null},
-    euro={value:4,op:">="},km={value:140000,op:null},description={value:null,op:null},
+    url={value:null,op:null},imgUrl={value:null,op:null},date={value:null,op:">="},
+    euro={value:4,op:">="},km={value:140000,op:null},description={value:null,op:null},fuel={value:"GPL",op:"like"},
     creationDate={value:null,op:null},expired={value:false,op:"="},lastChecked={value:null,op:null}){
         this.nome = nome
         this.prezzo = prezzo
         this.imgUrl = imgUrl
         this.euro = euro
+        this.date = date;
         this.km = km
         this.description = description
+        this.fuel = fuel
         this.creationDate = creationDate
         this.expired = expired
         this.lastChecked = lastChecked
@@ -59,17 +64,24 @@ export class CarParamsSelector {
     }
     toDbObj(){
         let nome={};
+        let fuel={};
         if(this.nome.value) {
             nome.value = "%"+this.nome.value+"%";
             nome.op = this.nome.op}
         else nome = null;
+        if(this.fuel.value) {
+            fuel.value = "%"+this.fuel.value+"%";
+            fuel.op = this.fuel.op}
+        else fuel = null;
         return {
             nome,
             prezzo:this.prezzo,
             imgUrl:this.imgUrl,
             euro:this.euro,
             km:this.km,
+            date:this.date,
             description:this.description,
+            fuel,
             creationDate:this.creationDate,
             expired:this.expired,
             lastChecked:this.lastChecked

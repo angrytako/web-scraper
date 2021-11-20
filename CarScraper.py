@@ -56,7 +56,8 @@ class CarScraper:
             for carUrl in pageCarsUrls:
                 carSup = self.getCarFromUrl(carUrl)
                 try:
-                    if carSup.price <= 3000 and carSup.euro and carSup.euro >= 4 and carSup.km <= 110000:
+                    pass
+                    if carSup.price <= 3200 and carSup.euro and carSup.euro >= 4 and carSup.km and carSup.km <= 110000:
                             req.post(os.getenv("SERVER_URL") + os.getenv("EMAIL_PATH"), json=f'{{"message": "{carSup.url}"}}')
                             print("CANDIDATE:", carSup.url)
                     carSup.saveToDb(connection)

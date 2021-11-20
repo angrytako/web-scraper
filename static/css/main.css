@@ -12,6 +12,38 @@ a{
     text-decoration: none;
     color:inherit;
 }
+#app{
+    display: flex;
+    width: inherit;
+}
+#filler{
+    width: 15%;
+}
+nav{
+    position: fixed;    
+    width: 15%;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content:space-around;
+    align-items: center;
+}  
+nav>div{
+    display: flex;
+    width: 80%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+nav>div>label, nav>div>input{
+    display: block ;
+}
+#infos>label{
+    display: block ;
+}
+#infos{
+    width: 85%;
+}
 li{
     width: 70vw;
     padding: 20px;
@@ -38,9 +70,7 @@ textarea{
 .description{
     margin: 20px 0;
 }
-.infos{
-    width: inherit;
-}
+
 .input-change{
     font-weight: bold;
     display:none;
@@ -105,8 +135,6 @@ img{
 button{
     cursor: pointer;
     border-radius: 20%;
-    align-self: flex-end;
     width: 100px;
     height: 30px;
-    margin:60px 200px 0 0;
 }

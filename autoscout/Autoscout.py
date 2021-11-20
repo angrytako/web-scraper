@@ -49,7 +49,7 @@ class AutoscoutScraper(CarScraper):
         return pageCarsUrls
 
     def getMainUrl(self)->int:
-        return f"https://www.autoscout24.it/lst/?sort=standard&desc=0&fuel=L&ustate=N%2CU&page={self.pageCounter}&lon=7.68307&lat=45.06838&zip=Torino&zipr=300&cy=I&atype=C&fc=3&qry=GPL&recommended_sorting_based_id=9b87ca24-1422-4cda-8286-a94877ffa607&"
+        return f"https://www.autoscout24.it/lst/?sort=standard&desc=0&ustate=N%2CU&page={self.pageCounter}&lon=7.68307&lat=45.06838&zip=Torino&zipr=300&cy=I&atype=C&fc=3&qry=GPL&recommended_sorting_based_id=9b87ca24-1422-4cda-8286-a94877ffa607&"
 
     def getCarFromUrl(self, carUrl:str)->Car:
         carPage = req.get(carUrl)
@@ -90,7 +90,9 @@ class AutoscoutScraper(CarScraper):
                         euro = re.search(r"Euro\s?\d",parsedCarPage.text)
                         if euro != None:
                             euro = euro.group(0)
-        return Car(carName,price,carUrl,imgUrl,date,euro,km,description)
+        if fuel and "gas di petrolio liquefatto" in fuel.lower():
+            fuel = "GPL"
+        return Car(carName,price,carUrl,imgUrl,date,euro,km,description,fuel)
 
 
 if __name__ == "__main__":

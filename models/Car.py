@@ -4,7 +4,7 @@ from sqlite3.dbapi2 import Connection
 from datetime import datetime
 
 class Car:
-    def __init__(self,name,price,url,imgUrl,date,euro,km,description, 
+    def __init__(self,name,price,url,imgUrl,date,euro,km,description, fuel="GPL",
                  creationDate = datetime.now().isoformat(), expired = False, lastChecked = datetime.now().isoformat()):
         if name:
             self.name = name
@@ -28,6 +28,10 @@ class Car:
             self.description = description
         else:
             self.description=None
+        if fuel:
+            self.fuel = fuel
+        else:
+            self.fuel=None
         self.creationDate = creationDate
         self.expired = expired
         self.lastChecked = lastChecked
@@ -45,30 +49,31 @@ class Car:
         link scaduto: {self.expired}
         last checked: {self.lastChecked}
         descrizione: {self.description}
+        carburante: {self.fuel}
         """
     def toArray(self):
         return [self.url,self.name,self.price,self.imgUrl,self.date,self.euro,self.km,
-                self.description,self.creationDate, self.expired,self.lastChecked]
+                self.description,self.fuel,self.creationDate, self.expired,self.lastChecked]
 
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, 
             sort_keys=True, indent=4)
 
-    def saveToDb(self,connection:Connection):
+    def saveToDb(self, connection:Connection):
         cur = connection.cursor()
         args = self.toArray()
-        statement = f"""INSERT INTO CAR (CAR_URL,NOME,PREZZO,IMG_URL,DATE,EURO,KM,DESCRIPTION,CREATION_DATE,EXPIRED,LAST_CHECKED) 
-                        VALUES (?,?,?,?,?,?,?,?,?,?,?)"""
+        statement = f"""INSERT INTO CAR (CAR_URL,NOME,PREZZO,IMG_URL,DATE,EURO,KM,DESCRIPTION,FUEL,CREATION_DATE,EXPIRED,LAST_CHECKED) 
+                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"""
         cur.execute(statement,args)
         cur.execute("commit;")       
 
     def updateInDb(self,connection:Connection):
         cur = connection.cursor()
         args = [self.name,self.price,self.imgUrl,self.date,self.euro,self.km,
-                self.description,self.expired,self.lastChecked,self.url]
+                self.description,self.fuel,self.expired,self.lastChecked,self.url]
         statement = f"""UPDATE CAR 
                         SET NOME = ?, PREZZO = ?, IMG_URL = ?, DATE = ?, EURO = ?,
-                        KM = ?, DESCRIPTION = ?, EXPIRED = ?, LAST_CHECKED = ? 
+                        KM = ?, DESCRIPTION = ?,FUEL = ?, EXPIRED = ?, LAST_CHECKED = ? 
                         WHERE CAR_URL = ?"""
         cur.execute(statement,args)
         cur.execute("commit;")      
@@ -77,5 +82,5 @@ class Car:
 def fromDictionary(carDict:dict) ->Car:
     return Car(carDict["name"],int(carDict["price"]),carDict["url"],
                 carDict["imgUrl"],int(carDict["date"]) ,int(carDict["euro"]) if carDict["euro"]  else None,
-                int(carDict["km"]), carDict["description"],datetime.fromisoformat(carDict["creationDate"]),
+                int(carDict["km"]), carDict["description"], carDict["fuel"],datetime.fromisoformat(carDict["creationDate"]),
                 carDict["expired"],datetime.fromisoformat(carDict["lastChecked"]))

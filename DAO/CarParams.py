@@ -1,11 +1,11 @@
 
 
 class CarParams:
-    paramsNames = ["nome","prezzo","url","imgUrl","date","euro","km","description","creationDate","expired","lastChecked"]
+    paramsNames = ["nome","prezzo","url","imgUrl","date","euro","km","description","fuel","creationDate","expired","lastChecked"]
     paramsDefault = { "nome": {"value": None, "op":None },"prezzo": {"value":4000,"op":"<=" },
                     "url": {"value": None, "op":None }, "imgUrl": {"value": None, "op": None },
                     "date": {"value": None, "op":None },"euro": {"value":4,"op":">=" },"km": {"value":130000,"op":"<="},
-                    "description": {"value": None, "op":None }, "creationDate": {"value": None, "op": None },
+                    "description": {"value": None, "op":None },"fuel": {"value": None, "op":None } ,"creationDate": {"value": None, "op": None },
                     "expired": {"value":False,"op":"="},"lastChecked": {"value": None, "op":None } }
     def __init__(self, carDict):
        for paramName in self.paramsNames:
@@ -37,10 +37,11 @@ class CarParams:
         link scaduto: {self.expired["value"]}
         last checked: {self.lastChecked["value"]}
         descrizione: {self.description["value"]}
+        fuel: {self.fuel["value"]}
         """
     def toDbStringAndArray(self):
         validParamsCounter = 0
-        dbString = "SELECT CAR_URL,NOME,PREZZO,IMG_URL,DATE,EURO,KM,DESCRIPTION,CREATION_DATE,EXPIRED,LAST_CHECKED FROM CAR WHERE"
+        dbString = "SELECT CAR_URL,NOME,PREZZO,IMG_URL,DATE,EURO,KM,DESCRIPTION,FUEL,CREATION_DATE,EXPIRED,LAST_CHECKED FROM CAR WHERE"
         dbStringArgs = []
         for paramName in self.paramsNames:
             param = self.__getattribute__(paramName)

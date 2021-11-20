@@ -1,6 +1,5 @@
 from sqlite3.dbapi2 import Error
 from bs4 import BeautifulSoup
-from bs4.element import NavigableString
 import requests as req
 import sys
 import os
@@ -64,9 +63,12 @@ class SubitoScraper(CarScraper):
         date = None
         euro = None
         km = None
+        fuel = None
         for quadrant in allMains:
             if "/" in quadrant.text and quadrant.text.split("/")[0].isdecimal():
                 date=quadrant.text.split("/")[1]
+            elif "Carburante" in quadrant.text and quadrant.text.split("/")[0].isdecimal():
+                print(quadrant.text.split("/")[1])
             elif "Euro" in quadrant.text:
                 euro = quadrant.text
             elif "Km" in quadrant.text and quadrant.text.split(" ")[0].isdecimal():
@@ -75,7 +77,14 @@ class SubitoScraper(CarScraper):
             euro = re.search(r"Euro\s?\d",parsedCarPage.text)
             if euro != None:
                 euro = euro.group(0)
-        return Car(carName,price,carUrl,imgUrl,date,euro,km,description)
+        spans = parsedCarPage.findAll("span")
+        for i, span in enumerate(spans):
+            if "Carburante" in spans[i].text:
+                fuel = spans[i+1].text
+                break
+        if fuel and "gas di petrolio liquefatto" in fuel.lower():
+            fuel = "GPL"
+        return Car(carName,price,carUrl,imgUrl,date,euro,km,description,fuel)
 
 #returns set of all carsUrls, if you haven't seen them before,
 #otherwise assumes that you have reached 'the end' and returns null
@@ -103,7 +112,7 @@ class SubitoScraper(CarScraper):
         return urls
 
     def getMainUrl(self)->int:
-        return f"https://www.subito.it/annunci-piemonte/vendita/auto/?o={self.pageCounter}&cvs=1&ps=1000&fu=3"
+        return f"https://www.subito.it/annunci-piemonte/vendita/auto/?o={self.pageCounter}&cvs=1&ps=1000"
 
 
 if __name__ == "__main__":
