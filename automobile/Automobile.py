@@ -35,7 +35,7 @@ class AutomobileScraper(CarScraper):
         for car in cars:
             try:
                 carUrl = self.BASE_URL + car["href"]
-                imgUrl = {carUrl:car.find(class_="Card__ImgContainer").find("img")["data-src"]}
+                imgUrl = car.find(class_="Card__ImgContainer").find("img")["data-src"]
             except:
                 continue
             actualCars+=1
@@ -46,7 +46,7 @@ class AutomobileScraper(CarScraper):
             self.carsUrls.add(carUrl)
             self.sem.release()
             urls.add(carUrl)
-            self.imgUrls.append(imgUrl)
+            self.imgUrls[carUrl] = imgUrl
         print(f"from {actualCars} to {len(urls)} doubles: {doubleNr}")
         if len(urls)==0:
             return None
