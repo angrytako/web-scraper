@@ -14,7 +14,7 @@
     <div id="app">
         <nav>
             <div>
-                <h2>{{cars.length}} macchine</h2>
+                <h2>{{cars ? cars.length : 0}} macchine</h2>
             </div>
             <div>
                 <button v-on:click="changeOrderElems">{{buttonStatus}}</button>

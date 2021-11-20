@@ -46,10 +46,11 @@ async function sendSearch(params, cars){
                             });
                             if(cars) {this.cars = await carsReq.json();
                                 Object.keys(this.wantsNulls).forEach(key =>{
+                                    console.log(this.wantsNulls[key])
                                     if(this.wantsNulls[key] == false)
-                                        this.cars.forEach((car,index) =>{
-                                            if(!car[key]) this.cars.splice(index,1);
-                                        })
+                                    this.cars = this.cars.filter(
+                                        car => car[key]
+                                    )
                                 })
                                 changeOrderElems.bind(this)()  
                                 changeOrderElems.bind(this)()    }
