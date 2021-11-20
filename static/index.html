@@ -20,24 +20,24 @@
                 <button v-on:click="changeOrderElems">{{buttonStatus}}</button>
             </div>
             <div>
-                <label>annoMin immatricolazione</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="number" v-model.number="carsSearchParams.date.value">
+                <label>Anno minimo immatricolazione</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="number" v-model.number="carsSearchParams.date.value">
             </div>
             <div>
-                <label>prezzoMax</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="number" v-model.number="carsSearchParams.prezzo.value"> 
+                <label>Prezzo Massimo</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="number" v-model.number="carsSearchParams.prezzo.value"> 
             </div>
             <div>
-                <label> euroMin</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="number" v-model.number="carsSearchParams.euro.value">
+                <label> Inquinamento euro minimo</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="number" v-model.number="carsSearchParams.euro.value">
                 <div class="null selector"><label>non specificato</label><input type="checkbox" v-model="wantsNulls.euro" checked=true v-on:click="sendSearch(carsSearchParams.toDbObj(),cars)"></div>
             </div>
             <div>
-                <label >carburante</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="text" v-model="carsSearchParams.fuel.value">
+                <label >Carburante</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="text" v-model="carsSearchParams.fuel.value">
                 <div class="null selector"><label>non specificato</label><input type="checkbox" v-model="wantsNulls.fuel" checked=true v-on:click="sendSearch(carsSearchParams.toDbObj(),cars)"></div>
             </div>
             <div>
-                <label >kmMax</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="number" v-model.number="carsSearchParams.km.value">
+                <label >Km massimi</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="number" v-model.number="carsSearchParams.km.value">
             </div>
             <div>
-                <label >titolo</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="text" v-model="carsSearchParams.nome.value">
+                <label >Parola chiave</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="text" v-model="carsSearchParams.nome.value">
             </div>
                 <button v-on:click="sendSearch(carsSearchParams.toDbObj(),cars)">search</button></nav>
                 <div id="filler"></div>
