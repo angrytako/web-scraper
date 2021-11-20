@@ -4,7 +4,7 @@ from sqlite3.dbapi2 import Connection
 from datetime import datetime
 
 class Car:
-    def __init__(self,name,price,url,imgUrl,date,euro,km,description, fuel="GPL",
+    def __init__(self,name,price,url,imgUrl,date,euro,km,description, fuel,
                  creationDate = datetime.now().isoformat(), expired = False, lastChecked = datetime.now().isoformat()):
         if name:
             self.name = name
@@ -80,7 +80,8 @@ class Car:
 
 
 def fromDictionary(carDict:dict) ->Car:
-    return Car(carDict["name"],int(carDict["price"]),carDict["url"],
-                carDict["imgUrl"],int(carDict["date"]) ,int(carDict["euro"]) if carDict["euro"]  else None,
-                int(carDict["km"]), carDict["description"], carDict["fuel"],datetime.fromisoformat(carDict["creationDate"]),
-                carDict["expired"],datetime.fromisoformat(carDict["lastChecked"]))
+    return Car(name=carDict["name"],price=int(carDict["price"]),url=carDict["url"],
+                imgUrl=carDict["imgUrl"],date = int(carDict["date"]) ,euro = int(carDict["euro"]) if carDict["euro"]  else None,
+                km = int(carDict["km"]), description = carDict["description"], fuel =carDict["fuel"],
+                creationDate=datetime.fromisoformat(carDict["creationDate"]),
+                expired=carDict["expired"],lastChecked=datetime.fromisoformat(carDict["lastChecked"]))
