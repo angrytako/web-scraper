@@ -59,8 +59,8 @@ def sendMail():
                   sender=os.getenv("EMAIL"),
                   recipients=[os.getenv("RECIPIENT_EMAIL")])
     msg.body = json.loads(request.json)["message"]
-    mail.send(msg)
     asyncio.run(sendToTelegram(msg.body))
+    mail.send(msg)
     return "sent"
 
 @app.route("/update", methods=["POST"])

@@ -16,7 +16,8 @@ import { Toggler, CarDiv, CarParamsSelector} from "./Classes.js"
     data: {
     cars:undefined,
     buttonStatus: "ByPrice",
-    carsSearchParams:null
+    carsSearchParams:null,
+    wantsNulls:{}
 
   },
   methods:{
@@ -44,6 +45,12 @@ async function sendSearch(params, cars){
                                 body:JSON.stringify(params)
                             });
                             if(cars) {this.cars = await carsReq.json();
+                                Object.keys(this.wantsNulls).forEach(key =>{
+                                    if(this.wantsNulls[key] == false)
+                                        this.cars.forEach((car,index) =>{
+                                            if(!car[key]) this.cars.splice(index,1);
+                                        })
+                                })
                                 changeOrderElems.bind(this)()  
                                 changeOrderElems.bind(this)()    }
      else {

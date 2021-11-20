@@ -14,10 +14,10 @@
     <div id="app">
         <nav>
             <div>
-                <button v-on:click="changeOrderElems">{{buttonStatus}}</button>
+                <h2>{{cars.length}} macchine</h2>
             </div>
             <div>
-                <label >carburante</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="text" v-model="carsSearchParams.fuel.value">
+                <button v-on:click="changeOrderElems">{{buttonStatus}}</button>
             </div>
             <div>
                 <label>annoMin immatricolazione</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="number" v-model.number="carsSearchParams.date.value">
@@ -27,6 +27,11 @@
             </div>
             <div>
                 <label> euroMin</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="number" v-model.number="carsSearchParams.euro.value">
+                <div class="null selector"><label>non specificato</label><input type="checkbox" v-model="wantsNulls.euro" checked=true v-on:click="sendSearch(carsSearchParams.toDbObj(),cars)"></div>
+            </div>
+            <div>
+                <label >carburante</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="text" v-model="carsSearchParams.fuel.value">
+                <div class="null selector"><label>non specificato</label><input type="checkbox" v-model="wantsNulls.fuel" checked=true v-on:click="sendSearch(carsSearchParams.toDbObj(),cars)"></div>
             </div>
             <div>
                 <label >kmMax</label><input v-on:keyup.enter="sendSearch(carsSearchParams.toDbObj(),cars)" type="number" v-model.number="carsSearchParams.km.value">
@@ -52,7 +57,7 @@
                     <h4>{{car.km}} km</h4><img src="./img/edit_icon.svg" v-on:click="replaceWithInput($event,car)" class="change" name="km">
                     <div class="input-change"><input v-on:keyup.enter="update($event,car)" v-model="car.km" type="number"><label for="km"> km:</label><img src="./img/ok_icon.png" v-on:click="update($event,car)" class="update" name="km"></div>
                     <br>
-                    <h4>{{car.fuel}}</h4><img src="./img/edit_icon.svg" v-on:click="replaceWithInput($event,car)" class="change" name="fuel">
+                    <h4>Carburante: {{car.fuel ? car.fuel : "Non specificato"}}</h4><img src="./img/edit_icon.svg" v-on:click="replaceWithInput($event,car)" class="change" name="fuel">
                     <div class="input-change"><label for="fuel">Carburante:</label><input type="text" v-on:keyup.enter="update($event,car)"v-model="car.fuel" name="description"><img src="./img/ok_icon.png" v-on:click="update($event,car)" class="update" name="description"></div>
                     <br>
                     <h4>Data immatricolazione: {{car.date}}</h4>

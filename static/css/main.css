@@ -37,6 +37,7 @@ nav>div{
 }
 nav>div>label, nav>div>input{
     display: block ;
+    width: inherit;
 }
 #infos>label{
     display: block ;
