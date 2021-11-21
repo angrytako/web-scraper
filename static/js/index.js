@@ -3,7 +3,7 @@ import { Toggler, CarDiv, CarParamsSelector} from "./Classes.js"
     el: '#app',
     data: {
         cars:undefined,
-        buttonStatus: "ByPrice",
+        buttonStatus: "ByRecency",
         carsSearchParams:null,
         wantsNulls:{}
   },
@@ -14,7 +14,7 @@ import { Toggler, CarDiv, CarParamsSelector} from "./Classes.js"
     euro:{value:4,op:">="},km:{value:140000,op:null},description:{value:null,op:null},
     creationDate:{value:null,op:null},expired:{value:false,op:"="},lastChecked:{value:null,op:null}}*/
         this.cars = await sendSearch(this.carsSearchParams.toDbObj(), this.cars);
-        this.cars.sort((car1,car2) => car1.price - car2.price)
+        this.cars.sort((car1,car2) => new Date(car2.creationDate).getTime() - new Date(car1.creationDate).getTime())
     },
   methods:{
     changeOrderElems,

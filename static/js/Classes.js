@@ -45,9 +45,9 @@ export class CarDiv{
 }
 
 export class CarParamsSelector {
-    constructor(nome={value:null,op:"like"},prezzo={value:4000,op:"<="},
+    constructor(nome={value:null,op:"like"},prezzo={value:3200,op:"<="},
     url={value:null,op:null},imgUrl={value:null,op:null},date={value:null,op:">="},
-    euro={value:4,op:">="},km={value:140000,op:null},description={value:null,op:null},fuel={value:"GPL",op:"like"},
+    euro={value:4,op:">="},km={value:180000,op:null},description={value:null,op:null},fuel={value:null,op:"like"},
     creationDate={value:null,op:null},expired={value:false,op:"="},lastChecked={value:null,op:null}){
         this.nome = nome
         this.prezzo = prezzo
