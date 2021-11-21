@@ -1,9 +1,12 @@
 import { Toggler, CarDiv, CarParamsSelector} from "./Classes.js"
-    let app2 = new Vue({
+    let app2 = new Vue({ 
     el: '#app',
     data: {
-        message: 'You loaded this page on ' + new Date().toLocaleString()
-    },
+        cars:undefined,
+        buttonStatus: "ByPrice",
+        carsSearchParams:null,
+        wantsNulls:{}
+  },
     created: async function(){
         this.carsSearchParams = new CarParamsSelector();
         /*{nome:{value:null,op:"like"},prezzo:{value:4000,op:"<="},
@@ -13,13 +16,6 @@ import { Toggler, CarDiv, CarParamsSelector} from "./Classes.js"
         this.cars = await sendSearch(this.carsSearchParams.toDbObj(), this.cars);
         this.cars.sort((car1,car2) => car1.price - car2.price)
     },
-    data: {
-    cars:undefined,
-    buttonStatus: "ByPrice",
-    carsSearchParams:null,
-    wantsNulls:{}
-
-  },
   methods:{
     changeOrderElems,
     replaceWithInput,

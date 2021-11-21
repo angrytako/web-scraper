@@ -5,7 +5,7 @@ from datetime import datetime
 
 class Car:
     def __init__(self,name,price,url,imgUrl,date,euro,km,description, fuel,
-                 creationDate = datetime.now().isoformat(), expired = False, lastChecked = datetime.now().isoformat()):
+                 creationDate = None, expired = False, lastChecked = None):
         if name:
             self.name = name
         else:
@@ -32,9 +32,9 @@ class Car:
             self.fuel = fuel
         else:
             self.fuel=None
-        self.creationDate = creationDate
+        self.creationDate = creationDate if creationDate else datetime.now().isoformat()
+        self.lastChecked = lastChecked if lastChecked else datetime.now().isoformat()
         self.expired = expired
-        self.lastChecked = lastChecked
 
     def __str__(self):
         return f"""

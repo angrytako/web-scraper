@@ -8,12 +8,12 @@
 
 </head>
 <body>
-    <div id="spinner">
+    <div id="spinner" >
         <img src="./img/spinner.svg" alt="">
     </div>
     <div id="app">
         <nav>
-            <div>
+            <div> 
                 <h2>{{cars ? cars.length : 0}} macchine</h2>
             </div>
             <div>
@@ -44,7 +44,7 @@
        <div v-if="cars && cars.length > 0">
         <ul id="container">
             <li v-for="car in cars" :key="car.url">
-                 <a v-bind:href="car.url" target="blank"><h2>{{car.name}}</h2> </a>
+                 <a v-bind:href="car.url" target="blank"><h2>{{car.name}}</h2></a>
                  <a v-bind:href="car.url" target="blank" ><img v-bind:src="car.imgUrl" alt=""></a> <img src="./img/edit_icon.svg" v-on:click="replaceWithInput($event,car)" class="change" name="imgUrl">
                  <div class="input-change"><label for="imgUrl"> ImgUrl:</label><input v-on:keyup.enter="update($event,car)"v-model="car.imgUrl" type="string"><img src="./img/ok_icon.png" v-on:click="update($event,car)" class="update" name="imgUrl"></div>
                  <div id="infos">
