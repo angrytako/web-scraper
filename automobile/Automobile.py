@@ -23,7 +23,7 @@ class AutomobileScraper(CarScraper):
         if self.pageCounter <= 1:
             return "https://www.automobile.it/torino_comune?classe_emissioni=euro_6,euro_5,euro_4&prezzo_a=max_6000_euro&prezzo_da=1000&radius=300&valutazione_del_venditore=tutti"
         else:
-            return f"https://www.automobile.it/torino_comune/page-{self.pageCounter}?classe_emissioni=euro_6,euro_5,euro_4&dove=torino_comune&prezzo_a=max_6000_euro&prezzo_da=1000&radius=300&valutazione_del_venditore=tutti"
+            return f"https://www.automobile.it/torino_comune/page-{self.pageCounter}?classe_emissioni=euro_6,euro_5,euro_4&dove=torino_comune&prezzo_a=max_6000_euro&prezzo_da=1000&radius=100&valutazione_del_venditore=tutti"
 
     #returns set of all carsUrls, if you haven't seen them before,
     #otherwise assumes that you have reached 'the end' and returns null

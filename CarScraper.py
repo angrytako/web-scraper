@@ -57,7 +57,7 @@ class CarScraper:
                 carSup = self.getCarFromUrl(carUrl)
                 try:
                     pass
-                    if carSup.price <= 3200 and carSup.euro and carSup.euro >= 4 and carSup.km and carSup.km <= 110000:
+                    if carSup.price <= 3200 and carSup.euro and carSup.euro >= 4 and carSup.km and carSup.km <= 135000 and (not "diesel" in carSup.fuel.lower() or (carSup.euro and carSup.euro >= 6)):
                             req.post(os.getenv("SERVER_URL") + os.getenv("EMAIL_PATH"), json=f'{{"message": "{carSup.url}"}}')
                             print("CANDIDATE:", carSup.url)
                     carSup.saveToDb(connection)
