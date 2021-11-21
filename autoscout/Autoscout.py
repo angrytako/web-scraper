@@ -49,7 +49,7 @@ class AutoscoutScraper(CarScraper):
         return pageCarsUrls
 
     def getMainUrl(self)->int:
-        return f"https://www.autoscout24.it/lst/?sort=age&desc=1&ustate=N%2CU&size=10&page={self.pageCounter}&lon=7.68307&lat=45.06838&zip=Torino&zipr=100&cy=I&priceto=5000&atype=C&fc=4&qry=&recommended_sorting_based_id=9b87ca24-1422-4cda-8286-a94877ffa607&"
+        return f"https://www.autoscout24.it/lst/?sort=age&desc=1&ustate=N%2CU&page={self.pageCounter}&lon=7.68307&lat=45.06838&zip=Torino&zipr=100&cy=I&atype=C&fc=3&priceto=5000&recommended_sorting_based_id=9b87ca24-1422-4cda-8286-a94877ffa607&"
 
     def getCarFromUrl(self, carUrl:str)->Car:
         carPage = req.get(carUrl)
